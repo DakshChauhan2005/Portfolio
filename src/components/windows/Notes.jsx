@@ -12,7 +12,7 @@ const Notes = () => {
             .then(text => setMarkdown(text));
     })
     return (
-        <MacWindow>
+        <MacWindow height='40vh' width='30vw' x='1000' y='600'>
             <div className="noteWindow">
                 {markdown ? <SyntaxHighlighter language='typescript'style={atomOneDark} >{markdown}</SyntaxHighlighter> : <p>Loading...</p>}
             </div>
