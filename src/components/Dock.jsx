@@ -27,10 +27,10 @@ export default function Dock({ windowsState, setWindowsState }) {
       <div className="icon github" onClick={() => handleClick('github')}><img src="/doc-icons/github.svg" alt="" /></div>
       <div className="icon note" onClick={() => handleClick('note')}><img src="/doc-icons/note.svg" alt="" /></div>
       <div className="icon pdf" onClick={() => handleClick('pdf')}><img src="/doc-icons/pdf.svg" alt="" /></div>
-      <div className="icon calender"><img src="/doc-icons/calender.svg" alt="" /></div>
+      <div className="icon calender" onClick={()=>{window.open("https://calendar.google.com/calendar", "__blank")}} ><img src="/doc-icons/calender.svg" alt="" /></div>
       <div className="icon spotify" onClick={() => handleClick('spotify')}><img src="/doc-icons/spotify.svg" alt="" /></div>
-      <div className="icon mail"><img src="/doc-icons/mail.svg" alt="" /></div>
-      <div className="icon link"><img src="/doc-icons/link.svg" alt="" /></div>
+      <div className="icon mail" onClick={()=>{window.open("mailto:dakahchauhan11@gmail.com")}}><img src="/doc-icons/mail.svg" alt="" /></div>
+      <div className="icon link" onClick={()=>{window.open("https://www.linkedin.com/in/dakshchauhan-/", "__blank")}}><img src="/doc-icons/link.svg" alt="" /></div>
       <div className="icon cli" onClick={() => handleClick('cli')}><img src="/doc-icons/cli.svg" alt="" /></div>
     </footer>
   )

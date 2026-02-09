@@ -4,7 +4,7 @@ import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import Markdown from 'react-markdown'
 import MacWindow from './MacWindow';
 import './notes.scss'
-const Notes = () => {
+const Notes = ({ windowsState, windowName, setWindowsState   }) => {
     const [markdown, setMarkdown] = useState(null);
     useEffect(() => {
         fetch('note.txt')
@@ -12,7 +12,7 @@ const Notes = () => {
             .then(text => setMarkdown(text));
     })
     return (
-        <MacWindow height='40vh' width='30vw' x='1000' y='600'>
+        <MacWindow height='40vh' width='30vw' x='1000' y='600' windowName={windowName} windowsState={windowsState} setWindowsState={setWindowsState}>
             <div className="noteWindow">
                 {markdown ? <SyntaxHighlighter language='typescript'style={atomOneDark} >{markdown}</SyntaxHighlighter> : <p>Loading...</p>}
             </div>
