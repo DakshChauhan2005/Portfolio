@@ -1,0 +1,25 @@
+.noteWindow {
+    padding: 10px;
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 1rem;
+    font-size: 1rem;
+
+    pre{
+        background-color: rgba(0, 0, 0, 0.519) !important;
+    }
+
+    .note-error{
+        color: #ff9a95;
+        font-size: .9rem;
+    }
+}
+
+// The skills file is wide, formatted code. On a phone the choice is shrinking
+// it or scrolling it sideways; shrinking reads better.
+@media (max-width: 767px) {
+    .noteWindow{
+        font-size: .8rem;
+        padding: .5rem;
+    }
+}

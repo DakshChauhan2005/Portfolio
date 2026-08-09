@@ -1,0 +1,105 @@
+.cards{
+    overflow-y: auto;
+    height: 100%;
+    padding: 1rem;
+
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .card{
+        flex-grow: 1;
+        flex-basis: 20rem;
+        max-width: 30rem;
+        
+
+        padding-inline: 1rem;
+        padding-block: .75rem;
+
+        background-color: black;
+        border-radius: .5rem;
+
+        color: rgb(222, 222, 222);
+
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        .thumb{
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: .5rem;
+            object-fit: cover;
+        }
+
+        // Shown until real screenshots land in src/assets/projects/.
+        // A generated monogram beats a generic stock photo.
+        .thumb.placeholder{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            span{
+                font-size: 2.5rem;
+                font-weight: 700;
+                letter-spacing: .05em;
+                color: rgba(255, 255, 255, 0.92);
+            }
+
+            &[data-variant="0"]{ background: linear-gradient(135deg, #1f2a52, #3d5a9e); }
+            &[data-variant="1"]{ background: linear-gradient(135deg, #163f3a, #2f8f7d); }
+            &[data-variant="2"]{ background: linear-gradient(135deg, #45213f, #a3438c); }
+            &[data-variant="3"]{ background: linear-gradient(135deg, #4a2c17, #b5713a); }
+        }
+
+        p{
+            font-size: .9rem;
+            line-height: 1.2rem;   
+            word-spacing: .3rem;
+        }
+
+
+        .tags{
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: .5rem;
+            span{
+                background-color: #333;
+                padding: .25rem .5rem;
+                border-radius: .25rem;
+                font-size: .8rem;
+            }
+        }
+
+        .urls{
+            display: flex;
+            gap: 1rem;
+            a{
+                text-decoration: none;
+                color: #4ea6ff;
+                font-weight: 600;
+                // 44px tall tap target without changing how the link looks.
+                padding-block: .6rem;
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+// Mobile: one card per row, and the padding that framed cards on a desktop
+// window is just lost width on a phone.
+@media (max-width: 767px) {
+    .cards{
+        gap: 1rem;
+        padding: .75rem;
+
+        .card{
+            flex-basis: 100%;
+            max-width: 100%;
+        }
+    }
+}

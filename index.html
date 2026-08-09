@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover is what makes env(safe-area-inset-*) report real
+         values on notched iPhones; the mobile dock uses it to clear the home
+         indicator. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <title>Daksh Chauhan — Full-Stack Developer</title>
+    <meta
+      name="description"
+      content="Portfolio of Daksh Chauhan, a full-stack developer working across MERN, REST APIs, IoT and AI-assisted tooling — presented as an interactive macOS desktop."
+    />
+    <meta name="author" content="Daksh Chauhan" />
+    <meta name="theme-color" content="#1f2a52" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- The wallpaper is the largest paint on the page, and as a CSS background
+         it would otherwise not start downloading until the stylesheet has been
+         fetched and parsed. `media` mirrors the breakpoint in app.scss, so only
+         the variant that will actually be used is preloaded. -->
+    <link rel="preload" as="image" href="/mac-wallpaper.jpg" media="(min-width: 768px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/mac-wallpaper-1200.jpg" media="(max-width: 767px)" fetchpriority="high" />
+
+    <!-- TODO(og-image): replace with a 1200x630 screenshot of the desktop.
+         Using the wallpaper as a stand-in so link previews aren't blank.
+         These URLs are absolute and hardcoded on purpose: scrapers do not
+         resolve relative paths, so they cannot go through Vite's `base`. If the
+         deploy target changes, these four lines change with it. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dakshchauhan2005.github.io/Portfolio/" />
+    <meta property="og:title" content="Daksh Chauhan — Full-Stack Developer" />
+    <meta
+      property="og:description"
+      content="An interactive macOS-themed portfolio: projects, skills, resume and a working terminal."
+    />
+    <meta property="og:image" content="https://dakshchauhan2005.github.io/Portfolio/mac-wallpaper.jpg" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Daksh Chauhan — Full-Stack Developer" />
+    <meta
+      name="twitter:description"
+      content="An interactive macOS-themed portfolio: projects, skills, resume and a working terminal."
+    />
+    <meta name="twitter:image" content="https://dakshchauhan2005.github.io/Portfolio/mac-wallpaper.jpg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="color: #fff; font-family: system-ui, sans-serif; padding: 2rem">
+        This portfolio needs JavaScript enabled. You can reach Daksh Chauhan at
+        <a style="color: #4ea6ff" href="mailto:dakahchauhan111@gmail.com">dakahchauhan111@gmail.com</a>
+        or on <a style="color: #4ea6ff" href="https://github.com/DakshChauhan2005">GitHub</a>.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

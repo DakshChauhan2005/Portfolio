@@ -1,0 +1,50 @@
+.resume-window{
+    position: relative;
+    height: 100%;
+
+    object{
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+    }
+
+    // Shown by the browser only when it refuses to render the PDF inline,
+    // which is the common case on mobile.
+    .resume-fallback{
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .75rem;
+        padding: 2rem;
+        text-align: center;
+
+        a{
+            color: #4ea6ff;
+            font-weight: 600;
+        }
+    }
+
+    .resume-download{
+        position: absolute;
+        right: .85rem;
+        bottom: .85rem;
+
+        padding: .45rem .8rem;
+        border-radius: .4rem;
+        font-size: .8rem;
+        font-weight: 600;
+        text-decoration: none;
+
+        color: whitesmoke;
+        background-color: rgba(20, 20, 20, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(4px);
+
+        &:hover{
+            background-color: rgba(50, 50, 50, 0.95);
+        }
+    }
+}

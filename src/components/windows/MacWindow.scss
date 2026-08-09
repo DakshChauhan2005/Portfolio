@@ -1,0 +1,149 @@
+// Full-screen frame used below the mobile breakpoint, in place of the Rnd
+// wrapper. It fills .desktop, which already stops above the dock.
+.mobile-window {
+    position: absolute;
+    inset: 0;
+}
+
+.window {
+    // Flex column is what keeps content inside the frame. Previously both
+    // .window and .main-content were height:100%, so content overflowed by
+    // exactly the height of the title bar — which is why the Github and CLI
+    // stylesheets each carried a padding-bottom hack. Both are now gone.
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    background-color: #232323ac;
+    backdrop-filter: blur(5px);
+    border-radius: .75rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: whitesmoke;
+    font-weight: 500;
+    cursor: default;
+
+    // The frame takes focus when it opens (see MacWindow.jsx); a ring around
+    // the whole window is noise, so only the shadow marks it.
+    &:focus {
+        outline: none;
+    }
+
+    .titlebar {
+        flex: 0 0 auto;
+        cursor: grab;
+
+        padding-inline: .75rem;
+        padding-block: .35rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+
+        &:active {
+            cursor: grabbing;
+        }
+
+        .dots {
+            display: flex;
+            gap: 0;
+            cursor: default;
+
+            // 24px button around a 12px dot: the macOS look is unchanged but
+            // the hit target clears the minimum target-size guideline, which
+            // matters most on touch.
+            .dot {
+                appearance: none;
+                border: 0;
+                background: none;
+                padding: 0;
+                margin: 0;
+                cursor: pointer;
+
+                height: 24px;
+                width: 24px;
+                display: grid;
+                place-items: center;
+
+                &::before {
+                    content: '';
+                    display: block;
+                    height: 12px;
+                    width: 12px;
+                    border-radius: 50%;
+                    background: white;
+                    transition: transform 0.3s ease, opacity 0.3s ease;
+                }
+
+                &:active::before {
+                    transform: scale(0.85);
+                }
+
+                &:hover::before {
+                    opacity: 0.8;
+                }
+            }
+
+            .red::before {
+                background-color: #ff605c;
+            }
+
+            .green::before {
+                background-color: #28ca41;
+            }
+
+            .yellow::before {
+                background-color: #ffbd2e;
+            }
+        }
+
+        .tittle {
+            font-size: .9rem;
+            font-weight: 500;
+            opacity: .9;
+            user-select: none;
+        }
+    }
+
+    .main-content {
+        // min-height:0 lets this shrink inside the flex column instead of
+        // forcing the frame taller than its own height.
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    *::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+    }
+}
+
+// Mobile: the window is the screen, so the floating-panel treatment (rounded
+// corners, drop shadow, grab cursor) only wastes pixels.
+@media (max-width: 767px) {
+    // Stop above the dock. .desktop's padding can't do this — an absolutely
+    // positioned child is laid out against the padding box, so it would sit
+    // under the dock regardless.
+    .mobile-window {
+        bottom: var(--mobile-dock-h);
+    }
+
+    .mobile-window .window {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+
+        .titlebar {
+            cursor: default;
+            gap: 1rem;
+        }
+    }
+}

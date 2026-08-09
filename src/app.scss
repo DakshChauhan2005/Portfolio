@@ -1,0 +1,130 @@
+*{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+
+:root{
+    // Height of the dock once it becomes a bottom tab bar: the 2.5rem icon
+    // plus the .5rem/.9rem padding in dock.scss, plus the iOS home indicator.
+    // Full-screen mobile windows stop exactly here, so the dock never covers
+    // their content and no strip of wallpaper shows through between them.
+    --mobile-dock-h: calc(3.9rem + env(safe-area-inset-bottom, 0px));
+}
+
+html, body, #root{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    // Stops the rubber-band scroll on mobile from dragging the whole desktop.
+    overscroll-behavior: none;
+}
+
+#root{
+    // Dynamic viewport height, so the dock sits above the mobile browser's
+    // chrome instead of behind the URL bar. Falls back to the 100% above.
+    height: 100dvh;
+}
+
+main{
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+// The area windows live in: everything below the menu bar. The dock floats
+// over its bottom edge. `position: relative` is what react-rnd's
+// bounds="parent" measures against, so a window can't be dragged off-screen.
+.desktop{
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+body{
+    // Painted under the wallpaper so the desktop is never a white flash while
+    // the image downloads; it is roughly the photo's darkest tone.
+    background-color: #14181d;
+    color: white;
+
+    background-image: url(/mac-wallpaper.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+// Phones get a 1200x800, 66 kB crop rather than the 2400x1600, 270 kB original
+// — a 390px viewport at DPR 3 is only ~1170 device pixels wide, so the big one
+// is pure waste there. index.html preloads whichever of the two matches.
+@media (max-width: 767px){
+    body{
+        background-image: url(/mac-wallpaper-1200.jpg);
+    }
+}
+
+// The desktop's half of the boot intro. While BootSequence plays, the menu bar
+// and the dock are held out; when it reports the reveal they slide in under the
+// lifting veil, offset from each other the way macOS brings them up.
+//
+// The delays are measured from that moment and scaled by --boot-k (the intro's
+// runtime over its natural 8.6s), so re-timing the intro re-times these too.
+// They animate `translate` rather than `transform` because the dock already
+// uses `transform` to centre itself, and the two compose instead of fighting.
+main.booting{
+    nav, .dock{
+        opacity: 0;
+    }
+}
+
+main.revealing{
+    nav{
+        animation: boot-menu-in calc(420ms * var(--boot-k, 1)) cubic-bezier(.22, 1, .36, 1) calc(260ms * var(--boot-k, 1)) both;
+    }
+
+    .dock{
+        animation: boot-dock-in calc(460ms * var(--boot-k, 1)) cubic-bezier(.22, 1, .36, 1) calc(390ms * var(--boot-k, 1)) both;
+    }
+}
+
+@keyframes boot-menu-in{
+    from{ opacity: 0; translate: 0 -30px; }
+    to{ opacity: 1; translate: 0 0; }
+}
+
+@keyframes boot-dock-in{
+    from{ opacity: 0; translate: 0 46px; }
+    to{ opacity: 1; translate: 0 0; }
+}
+
+// Suspense fallback while a window's chunk downloads. Usually invisible — the
+// idle prefetch has normally finished by the time anything is clicked.
+.window-loading{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #21252b;
+    color: #9aa3b2;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: .85rem;
+}
+
+// One visible focus ring for the whole app. :focus-visible rather than :focus
+// so it appears for keyboard users without ringing every mouse click.
+:focus-visible{
+    outline: 2px solid #7cc4ff;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

@@ -1,0 +1,276 @@
+// The window-animation editor. Sits under the menu bar (z-index 1000) and over
+// the windows (10 and up) and the dock (900), so it stays readable while the
+// animation it is editing plays underneath it.
+.anim-settings {
+    position: absolute;
+    top: calc(100% + .5rem);
+    right: .75rem;
+    z-index: 1200;
+
+    width: 17rem;
+    max-height: calc(100vh - 5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    padding: .875rem;
+    border-radius: .875rem;
+    background: rgba(20, 21, 26, .82);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 0 0 .5px rgba(255, 255, 255, .14), 0 20px 50px rgba(0, 0, 0, .5);
+
+    color: whitesmoke;
+    font-size: .8rem;
+    text-align: left;
+
+    &:focus {
+        outline: none;
+    }
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+
+        h2 {
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+        }
+
+        .dismiss {
+            appearance: none;
+            border: 0;
+            padding: 0;
+            height: 24px;
+            width: 24px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .12);
+            color: inherit;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(255, 255, 255, .22);
+            }
+        }
+    }
+
+    .lede {
+        margin-top: .4rem;
+        font-size: .68rem;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, .5);
+    }
+
+    section {
+        margin-top: .875rem;
+
+        h3 {
+            font-size: .6rem;
+            font-weight: 600;
+            letter-spacing: .11em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .42);
+            margin-bottom: .45rem;
+        }
+    }
+
+    .field {
+        margin-bottom: .6rem;
+
+        .label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 500;
+            margin-bottom: .3rem;
+            color: rgba(255, 255, 255, .82);
+
+            // The value readout sits opposite its own label.
+            &.row {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                gap: .5rem;
+            }
+        }
+
+        output {
+            font: .68rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+            color: rgba(255, 255, 255, .55);
+        }
+
+        .hint {
+            margin-top: .3rem;
+            font-size: .64rem;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, .38);
+        }
+    }
+
+    // Segmented control. Real buttons carrying aria-pressed, not styled divs.
+    .segment {
+        display: flex;
+        gap: 3px;
+        padding: 3px;
+        border-radius: .5rem;
+        background: rgba(255, 255, 255, .07);
+
+        button {
+            flex: 1 1 0;
+            min-width: 0;
+            appearance: none;
+            border: 0;
+            padding: .32rem .1rem;
+            border-radius: .375rem;
+            background: transparent;
+            color: rgba(255, 255, 255, .62);
+            font: inherit;
+            font-size: .7rem;
+            cursor: pointer;
+
+            &:hover {
+                color: whitesmoke;
+            }
+
+            &.on {
+                background: rgba(255, 255, 255, .22);
+                color: whitesmoke;
+                font-weight: 600;
+            }
+        }
+    }
+
+    select {
+        width: 100%;
+        appearance: none;
+        border: 0;
+        padding: .38rem .5rem;
+        border-radius: .5rem;
+        background: rgba(255, 255, 255, .1);
+        color: whitesmoke;
+        font: inherit;
+        font-size: .72rem;
+        cursor: pointer;
+
+        // The list itself is drawn by the OS, which does not inherit the panel's
+        // dark background — so the options need their own.
+        option {
+            background: #1b1d23;
+            color: whitesmoke;
+        }
+    }
+
+    input[type='range'] {
+        width: 100%;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+
+        &::-webkit-slider-runnable-track {
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, .18);
+        }
+
+        &::-webkit-slider-thumb {
+            appearance: none;
+            margin-top: -5.5px;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: whitesmoke;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+        }
+
+        &::-moz-range-track {
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, .18);
+        }
+
+        &::-moz-range-thumb {
+            border: 0;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: whitesmoke;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+        }
+    }
+
+    .check {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-size: .72rem;
+        color: rgba(255, 255, 255, .82);
+        cursor: pointer;
+
+        input {
+            accent-color: #7cc4ff;
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+        }
+    }
+
+    footer {
+        display: flex;
+        gap: .4rem;
+        margin-top: .9rem;
+        padding-top: .7rem;
+        border-top: .5px solid rgba(255, 255, 255, .12);
+
+        button {
+            flex: 1;
+            appearance: none;
+            border: 0;
+            padding: .42rem 0;
+            border-radius: .5rem;
+            background: rgba(255, 255, 255, .14);
+            color: whitesmoke;
+            font: inherit;
+            font-size: .72rem;
+            font-weight: 500;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(255, 255, 255, .24);
+            }
+        }
+    }
+}
+
+// The trigger in the menu bar, styled to sit among the decorative nav items.
+.nav-settings-button {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    height: 22px;
+    width: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: .3rem;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &[aria-expanded='true'] {
+        background: rgba(255, 255, 255, .18);
+    }
+}
+
+// Phones: the fixed-width panel would hang off a 360px screen, and there is no
+// room beside the dock, so it spans the viewport instead.
+@media (max-width: 767px) {
+    .anim-settings {
+        left: .5rem;
+        right: .5rem;
+        width: auto;
+        max-height: 62vh;
+    }
+}

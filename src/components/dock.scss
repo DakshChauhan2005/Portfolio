@@ -1,0 +1,129 @@
+.dock {
+    display: flex;
+    gap: .75rem;
+    position: absolute;
+    bottom: .31rem;
+    left: 50%;
+    transform: translate(-50%);
+    background-color: rgba(255, 255, 255, 0.13);
+    padding-inline: 1rem;
+    padding-top: .75rem;
+    padding-bottom: 1.15rem; // room for the running indicators
+    border-radius: .75rem;
+
+    // Above every window, so a window dragged to the bottom of the screen can
+    // never swallow the dock's clicks.
+    z-index: 900;
+
+    backdrop-filter: blur(5px);
+
+    .icon {
+        position: relative;
+        padding: .5rem;
+        border-radius: .5rem;
+        cursor: pointer;
+
+        // Reset, since these are real <button>/<a> elements now: without it the
+        // buttons pick up the UA border, background and font.
+        appearance: none;
+        border: 0;
+        background: none;
+        text-decoration: none;
+        color: inherit;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        aspect-ratio: 1/1;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex: 0 0 auto;
+        transition: transform .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+        img {
+            // Caps the icon at the padding box without changing how it renders
+            // at the default size.
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+
+    // The dot under an open app.
+    .icon.running::after {
+        content: '';
+        position: absolute;
+        bottom: -.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    // Magnification is a pointer affordance. On touch it sticks after a tap,
+    // leaving an icon stuck mid-zoom, so it's gated behind a real pointer.
+    @media (hover: hover) and (pointer: fine) {
+        .icon:hover {
+            transform: scale(1.3) translateY(-20%);
+        }
+
+        .icon:hover + .icon,
+        .icon:has(+ .icon:hover) {
+            transform: scale(1.1) translateY(-15%);
+        }
+    }
+
+    .github, .cli{
+        background: #000;
+    }
+    .note{
+        background: linear-gradient(to bottom, rgb(240, 177, 61), rgb(245, 166, 21));
+    }
+    .pdf, .mail{
+        background: linear-gradient(to bottom ,  rgba(255, 94, 86, 0.932) ,  rgba(240, 30, 19, 0.932)) ;
+    }
+    .calender{
+        background: linear-gradient(to bottom , rgb(122, 122, 255),rgb(66, 50, 255));
+    }
+    .spotify{
+        background: linear-gradient(to bottom ,#50ff8d, #1DB954);
+    }
+    .link{
+        background: linear-gradient(to bottom , rgb(202, 62, 202),rgb(136, 9, 136));
+    }
+}
+
+// Mobile: the dock stops being a floating panel and becomes a bottom tab bar
+// spanning the screen. Eight icons don't fit across a phone, so it scrolls
+// horizontally instead of overflowing invisibly.
+@media (max-width: 767px) {
+    .dock {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        transform: none;
+        border-radius: 0;
+        // `safe` keeps the first icons reachable if they ever do overflow —
+        // plain `center` would push them past the scroll origin. Browsers that
+        // don't parse it fall back to flex-start, which is also fine.
+        justify-content: safe center;
+
+        // Tuned so all eight icons fit a 390px screen without scrolling; the
+        // overflow-x below is the fallback for narrower phones.
+        gap: .35rem;
+        padding-inline: .4rem;
+        padding-top: .5rem;
+        // Clears the iOS home indicator when it's there, .9rem when it isn't.
+        padding-bottom: calc(.9rem + env(safe-area-inset-bottom, 0px));
+
+        overflow-x: auto;
+        overflow-y: hidden;
+        // A scrollbar across the tab bar looks like a bug; the icons overflowing
+        // the edge already signal that it scrolls.
+        scrollbar-width: none;
+        &::-webkit-scrollbar { display: none; }
+    }
+}

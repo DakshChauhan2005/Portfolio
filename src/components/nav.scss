@@ -1,0 +1,42 @@
+nav {
+    width: 100%;
+    color: white;
+    flex: 0 0 auto;
+
+    // The menu bar outranks everything, like the real one.
+    position: relative;
+    z-index: 1000;
+    padding-inline: .75rem;
+    padding-block: .5rem;
+    background-color: rgba(255, 255, 255, 0.096);
+    backdrop-filter: blur(5px);
+
+    display: flex;
+    justify-content: space-between;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    .left , .right{
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+}
+
+// Mobile: the bar has to hold a name and a clock on a 360px screen.
+@media (max-width: 767px) {
+    nav {
+        font-size: .8rem;
+        padding-inline: .5rem;
+
+        .left, .right {
+            gap: .5rem;
+            min-width: 0;
+        }
+
+        .nav-item p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}

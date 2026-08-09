@@ -1,0 +1,112 @@
+/**
+ * @file: skills.config.ts
+ * @author: Daksh Chauhan
+ * @summary: Full-stack developer with IoT, backend systems & problem-solving focus.
+ */
+
+// --------------------------------------------------
+// 1. CORE TECHNICAL SKILLS
+// --------------------------------------------------
+
+const TECH_STACK = {
+
+  frontend: [
+    "HTML5",        // 95%
+    "CSS3",         // 90%
+    "JavaScript",   // 90%
+    "React.js",     // 85%
+    "TailwindCSS",  // 85%
+    "Next.js",      // 70%
+  ],
+
+  backend: [
+    "Node.js",      // 85%
+    "Express.js",   // 85%
+    "REST APIs",    // 90%
+    "JWT Auth",     // 80%
+  ],
+
+  databases: [
+    "MongoDB",      // 85%
+    "PostgreSQL",   // 70%
+    "Firebase",     // 75%
+  ],
+
+  devops: [
+    "Git & GitHub", // 90%
+    "Docker",       // 65%
+    "Netlify",      // 85%
+    "Render",       // 75%
+  ],
+
+  iot_embedded: [
+    "ESP32",        // 80%
+    "Arduino",     // 75%
+    "NPK Sensors", // 70%
+    "pH / TDS / EC Sensors", // 70%
+    "OLED Display", // 80%
+  ],
+
+  problem_solving: [
+    "Data Structures & Algorithms", // 75%
+    "Time & Space Complexity",      // 80%
+    "Competitive Coding Basics",    // 70%
+  ],
+
+  tools: [
+    "VS Code",
+    "Postman",
+    "Linux",
+    "Figma",
+  ]
+};
+
+// --------------------------------------------------
+// 2. DOMAIN KNOWLEDGE
+// --------------------------------------------------
+
+const DOMAIN_EXPERTISE = {
+  webDevelopment: [
+    "Full-Stack Application Design",
+    "Authentication & Authorization",
+    "API Design & Integration",
+  ],
+
+  iotSystems: [
+    "Sensor Data Acquisition",
+    "Real-time Data Logging",
+    "Dashboard Visualization",
+  ],
+
+  hackathons: [
+    "Rapid Prototyping",
+    "Low-cost Engineering Solutions",
+    "Team-based Problem Solving",
+  ],
+};
+
+// --------------------------------------------------
+// 3. LEARNING PIPELINE (Active)
+// --------------------------------------------------
+
+const CURRENT_FOCUS = {
+  shortTerm: [
+    "Advanced DSA Patterns",
+    "System Design Basics",
+    "Backend Performance Optimization",
+  ],
+
+  midTerm: [
+    "Cloud Deployment (AWS)",
+    "Scalable APIs",
+    "Real-time Systems",
+  ],
+
+  longTerm: [
+    "SaaS Architecture",
+    "Distributed Systems",
+    "Startup-grade Product Engineering",
+  ],
+};
+
+export { TECH_STACK, DOMAIN_EXPERTISE, CURRENT_FOCUS };
