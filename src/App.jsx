@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import "./app.scss"
 import BootSequence from "./components/BootSequence"
 import { hasBooted } from "./components/bootGate"
@@ -7,10 +7,20 @@ import ErrorBoundary from "./components/ErrorBoundary"
 import Nav from "./components/Nav"
 import MacWindow from "./components/windows/MacWindow"
 import registry, { preloadAll } from "./components/windows/registry"
+import { getUiFont } from "./data/fonts"
+import { isLive } from "./data/wallpapers"
 import useAnimationSettings from "./hooks/useAnimationSettings"
+import useDesktopSettings from "./hooks/useDesktopSettings"
 import useIsMobile from "./hooks/useIsMobile"
 import useWindowAnimation from "./hooks/useWindowAnimation"
 import useWindowManager from "./hooks/useWindowManager"
+
+/**
+ * A chunk of its own, like the windows: the eight scenes, the Web Audio graph
+ * and the display webfonts only arrive if a live wallpaper is actually chosen.
+ * A visitor who leaves the photo up downloads none of it.
+ */
+const LiveWallpaper = lazy(() => import("./components/LiveWallpaper"))
 
 function App() {
   const desktopRef = useRef(null)
@@ -56,6 +66,26 @@ function App() {
    */
   const { settings, update, reset } = useAnimationSettings()
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  /**
+   * The desktop's own settings — wallpaper, motion, ambient sound, typography.
+   * Kept apart from the animation's so the panel's Reset button can belong to
+   * whichever tab is showing.
+   */
+  const desktop = useDesktopSettings()
+  const wallpaperIsLive = isLive(desktop.settings.wallpaper)
+
+  /**
+   * The chosen interface face, handed to the whole desktop as one custom
+   * property. `app.scss` gives `--ui-font` a default on `:root` and every piece
+   * of chrome resolves it from there, so nothing below has to be told about the
+   * setting — and the boot sequence, which sits outside `<main>`, keeps the
+   * stock macOS face whatever is chosen here.
+   */
+  const mainStyle = useMemo(
+    () => ({ '--ui-font': getUiFont(desktop.settings.uiFont).stack }),
+    [desktop.settings.uiFont],
+  )
 
   const anim = useWindowAnimation({
     windows: wm.windows,
@@ -139,18 +169,41 @@ function App() {
           moment the reveal starts, so the desktop is usable as it arrives. */}
       <main
         className={boot === 'off' ? undefined : `booting${boot === 'revealing' ? ' revealing' : ''}`}
-        style={boot === 'off' ? undefined : { '--boot-k': bootScale }}
+        style={boot === 'off' ? mainStyle : { ...mainStyle, '--boot-k': bootScale }}
         inert={boot === 'playing'}
       >
+        {/* Under everything, and only when a live scene is chosen — the still
+            photo is a `body` background that needs no component at all. No
+            Suspense fallback: there is nothing sensible to show in a
+            wallpaper's place, and the photo underneath is already on screen
+            while the chunk downloads. */}
+        {wallpaperIsLive && (
+          <ErrorBoundary label="Wallpaper" silent>
+            <Suspense fallback={null}>
+              <LiveWallpaper
+                wallpaperId={desktop.settings.wallpaper}
+                settings={desktop.settings}
+                mobile={isMobile}
+                // On a phone an open window fills the desktop and is opaque, so
+                // every frame drawn behind it is spent on pixels nobody sees.
+                paused={isMobile && topmost != null}
+              />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+
         <Nav
           mobile={isMobile}
-          animation={{
+          settings={{
             open: settingsOpen,
             onToggle: () => setSettingsOpen(o => !o),
-            settings,
-            update,
-            reset,
-            onReplay: replay,
+            desktop,
+            animation: { settings, update, reset, onReplay: replay },
+          }}
+          sound={{
+            on: desktop.settings.sound,
+            live: wallpaperIsLive,
+            onToggle: () => desktop.update('sound', !desktop.settings.sound),
           }}
         />
 

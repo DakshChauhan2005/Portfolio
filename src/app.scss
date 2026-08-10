@@ -10,6 +10,14 @@
     // Full-screen mobile windows stop exactly here, so the dock never covers
     // their content and no strip of wallpaper shows through between them.
     --mobile-dock-h: calc(3.9rem + env(safe-area-inset-bottom, 0px));
+
+    // The interface typeface. The default here is the stack the app has always
+    // used; the Fonts tab of the settings panel overrides it on <main>, so
+    // every part of the desktop that matters — menu bar, window chrome, the
+    // panel itself — follows without any of them knowing the setting exists.
+    // The boot sequence sits outside <main> and so always uses this default,
+    // which is right: it is meant to look like macOS, not like a preference.
+    --ui-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 html, body, #root{
@@ -33,13 +41,19 @@ main{
 
     display: flex;
     flex-direction: column;
+
+    // Carries the chosen interface face down to everything on the desktop.
+    // `--ui-font` is set inline on this element by App.
+    font-family: var(--ui-font);
 }
 
 // The area windows live in: everything below the menu bar. The dock floats
 // over its bottom edge. `position: relative` is what react-rnd's
 // bounds="parent" measures against, so a window can't be dragged off-screen.
+// `z-index: 1` lifts it clear of the live wallpaper, which is a sibling at 0.
 .desktop{
     position: relative;
+    z-index: 1;
     flex: 1 1 auto;
     min-height: 0;
     overflow: hidden;
@@ -109,7 +123,7 @@ main.revealing{
 
     background: #21252b;
     color: #9aa3b2;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: var(--ui-font);
     font-size: .85rem;
 }
 

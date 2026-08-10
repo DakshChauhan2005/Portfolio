@@ -1,15 +1,16 @@
-// The window-animation editor. Sits under the menu bar (z-index 1000) and over
-// the windows (10 and up) and the dock (900), so it stays readable while the
-// animation it is editing plays underneath it.
-.anim-settings {
+// System Settings. Sits under the menu bar (z-index 1000) and over the windows
+// (10 and up) and the dock (900), so it stays readable while the wallpaper and
+// the animation it is editing carry on underneath it.
+.settings-panel {
     position: absolute;
     top: calc(100% + .5rem);
     right: .75rem;
     z-index: 1200;
 
-    width: 17rem;
+    width: 20rem;
     max-height: calc(100vh - 5rem);
     overflow-y: auto;
+    // Reaching the end of the panel must not start scrolling the page behind it.
     overscroll-behavior: contain;
 
     padding: .875rem;
@@ -58,8 +59,41 @@
         }
     }
 
+    // Tab strip, styled as one segmented control rather than three buttons.
+    .tabs {
+        display: flex;
+        gap: 3px;
+        margin-top: .7rem;
+        padding: 3px;
+        border-radius: .5rem;
+        background: rgba(255, 255, 255, .07);
+
+        button {
+            flex: 1 1 0;
+            appearance: none;
+            border: 0;
+            padding: .34rem .1rem;
+            border-radius: .375rem;
+            background: transparent;
+            color: rgba(255, 255, 255, .62);
+            font: inherit;
+            font-size: .72rem;
+            cursor: pointer;
+
+            &:hover {
+                color: whitesmoke;
+            }
+
+            &.on {
+                background: rgba(255, 255, 255, .22);
+                color: whitesmoke;
+                font-weight: 600;
+            }
+        }
+    }
+
     .lede {
-        margin-top: .4rem;
+        margin-top: .7rem;
         font-size: .68rem;
         line-height: 1.45;
         color: rgba(255, 255, 255, .5);
@@ -75,6 +109,14 @@
             text-transform: uppercase;
             color: rgba(255, 255, 255, .42);
             margin-bottom: .45rem;
+        }
+
+        // A section-level hint, under a picker rather than under one field.
+        >.hint {
+            margin-top: .45rem;
+            font-size: .64rem;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, .38);
         }
     }
 
@@ -244,8 +286,131 @@
     }
 }
 
-// The trigger in the menu bar, styled to sit among the decorative nav items.
-.nav-settings-button {
+// The wallpaper grid. Each card previews the scene it selects — its own
+// gradient with its motif over it — so the list needs no thumbnails and no
+// image requests.
+.settings-panel .wallpaper-grid {
+    margin-top: .7rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .45rem;
+
+    .paper {
+        appearance: none;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: .6rem;
+        background: rgba(255, 255, 255, .04);
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: transform .18s ease, border-color .18s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        &.on {
+            border-color: rgba(255, 224, 196, .5);
+            box-shadow: 0 0 0 1px rgba(255, 224, 196, .25);
+        }
+
+        .tile {
+            display: block;
+            height: 46px;
+
+            .motif {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .meta {
+            display: flex;
+            flex-direction: column;
+            gap: .2rem;
+            padding: .4rem .45rem .45rem;
+        }
+
+        .name {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+            font-size: .68rem;
+            font-weight: 500;
+            color: rgba(255, 244, 234, .9);
+        }
+
+        .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 1px;
+            flex: 0 0 auto;
+        }
+
+        .hint {
+            font-size: .58rem;
+            line-height: 1.35;
+            color: rgba(255, 238, 224, .4);
+        }
+    }
+}
+
+// The two typeface lists. Each option is set in the face it selects, so the
+// list is its own specimen sheet.
+.settings-panel .font-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .4rem;
+
+    .face {
+        appearance: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .15rem;
+        padding: .45rem .2rem .4rem;
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: .5rem;
+        background: rgba(255, 255, 255, .04);
+        color: rgba(255, 244, 234, .88);
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(255, 255, 255, .09);
+        }
+
+        &.on {
+            border-color: rgba(255, 224, 196, .5);
+            background: rgba(255, 255, 255, .12);
+        }
+
+        .sample {
+            font-size: 1.15rem;
+            line-height: 1.1;
+        }
+
+        .name {
+            // Always the interface face, whatever the sample above it is set in.
+            font-family: var(--ui-font);
+            font-size: .58rem;
+            letter-spacing: .02em;
+            color: rgba(255, 255, 255, .5);
+        }
+    }
+
+    &.display .sample {
+        font-size: 1.45rem;
+    }
+}
+
+// The two menu-bar triggers, styled to sit among the decorative nav items.
+.nav-settings-button,
+.nav-sound-button {
     appearance: none;
     border: 0;
     padding: 0;
@@ -264,13 +429,18 @@
     }
 }
 
+// Muted reads as dimmed, the way a menu-bar volume icon does.
+.nav-sound-button[aria-pressed='false'] {
+    color: rgba(255, 255, 255, .45);
+}
+
 // Phones: the fixed-width panel would hang off a 360px screen, and there is no
 // room beside the dock, so it spans the viewport instead.
 @media (max-width: 767px) {
-    .anim-settings {
+    .settings-panel {
         left: .5rem;
         right: .5rem;
         width: auto;
-        max-height: 62vh;
+        max-height: 66vh;
     }
 }

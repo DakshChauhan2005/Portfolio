@@ -14,6 +14,9 @@ import './errorBoundary.scss'
  *
  *   label   what broke, shown in the heading (defaults to "This panel")
  *   onClose optional; renders a second button, used to close a dead window
+ *   silent  render nothing instead of the panel. For decoration whose absence
+ *           is better than an alert — the live wallpaper falls back to the
+ *           photo underneath it rather than papering the desktop with an error.
  */
 export default class ErrorBoundary extends React.Component {
     state = { error: null }
@@ -31,6 +34,7 @@ export default class ErrorBoundary extends React.Component {
     render() {
         const { error } = this.state
         if (!error) return this.props.children
+        if (this.props.silent) return null
 
         return (
             <div className="error-boundary" role="alert">
