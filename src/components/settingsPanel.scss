@@ -408,30 +408,43 @@
     }
 }
 
-// The two menu-bar triggers, styled to sit among the decorative nav items.
-.nav-settings-button,
-.nav-sound-button {
-    appearance: none;
-    border: 0;
-    padding: 0;
-    height: 22px;
-    width: 22px;
-    display: grid;
-    place-items: center;
-    border-radius: .3rem;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
+// The two menu-bar triggers are styled in `nav.scss`, not here: this file
+// ships with the panel's lazy chunk, so rules for anything that is on screen
+// before the panel is ever opened would arrive far too late.
 
-    &:hover,
-    &[aria-expanded='true'] {
-        background: rgba(255, 255, 255, .18);
+// The record on the Vinyl Hour turntable — the one setting whose value is a
+// file rather than a number, so it needs its own row rather than a schema entry.
+.settings-panel .track {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+
+    .now {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: .72rem;
+        color: rgba(255, 255, 255, .82);
     }
-}
 
-// Muted reads as dimmed, the way a menu-bar volume icon does.
-.nav-sound-button[aria-pressed='false'] {
-    color: rgba(255, 255, 255, .45);
+    button {
+        flex: 0 0 auto;
+        appearance: none;
+        border: 0;
+        padding: .32rem .5rem;
+        border-radius: .5rem;
+        background: rgba(255, 255, 255, .14);
+        color: whitesmoke;
+        font: inherit;
+        font-size: .68rem;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(255, 255, 255, .24);
+        }
+    }
 }
 
 // Phones: the fixed-width panel would hang off a 360px screen, and there is no

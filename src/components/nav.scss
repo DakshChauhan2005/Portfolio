@@ -22,6 +22,79 @@ nav {
         gap: 1rem;
         align-items: center;
     }
+
+    // The app name, which on a real menu bar is the one bold item.
+    .nav-item.name p {
+        font-weight: 600;
+    }
+
+    // Not a link, just the line that says what this person does. Sized down and
+    // dimmed so it reads as a subtitle to the name rather than another menu.
+    .nav-role {
+        font-size: .82rem;
+        color: rgba(255, 255, 255, .62);
+        white-space: nowrap;
+    }
+
+    // The contact links. Real anchors, so they are keyboard-operable and
+    // middle-clickable, and they show their destination on hover.
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: .15rem;
+
+        a {
+            padding: .1rem .4rem;
+            border-radius: .3rem;
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .82);
+            text-decoration: none;
+            white-space: nowrap;
+
+            &:hover {
+                color: whitesmoke;
+                background: rgba(255, 255, 255, .18);
+            }
+        }
+    }
+}
+
+// Between the phone breakpoint and a comfortable laptop the role is the first
+// thing to go: the links are the half that does something.
+@media (max-width: 940px) {
+    nav .nav-role {
+        display: none;
+    }
+}
+
+// The two menu-bar triggers, styled to sit among the decorative nav items.
+// **These belong here, not in `settingsPanel.scss`**: that file ships with the
+// panel's lazy chunk, and both buttons are on screen from first paint — so
+// styling them there left them as raw browser buttons until Settings was first
+// opened.
+.nav-settings-button,
+.nav-sound-button {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    height: 22px;
+    width: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: .3rem;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &[aria-expanded='true'] {
+        background: rgba(255, 255, 255, .18);
+    }
+}
+
+// Muted reads as dimmed, the way a menu-bar volume icon does.
+.nav-sound-button[aria-pressed='false'] {
+    color: rgba(255, 255, 255, .45);
 }
 
 // Mobile: the bar has to hold a name and a clock on a 360px screen.

@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import { contact, profile } from '../data/profile'
 import { asset } from '../utils/asset'
 import "./nav.scss"
 import DateTime from './DateTime'
@@ -36,13 +37,32 @@ const SoundIcon = ({ on }) => (
 )
 
 /**
+ * What the bar carries instead of decorative menu titles.
+ *
+ * This used to read `File · Window · Terminal` — three menus with nothing
+ * behind them, in the most valuable strip on the page. These are the same
+ * destinations as the dock's link icons, except they are **reachable without
+ * opening anything**: a visitor who never touches an icon still leaves with the
+ * résumé and a way to get in touch.
+ *
+ * The résumé is the PDF itself rather than the window that frames it, for the
+ * same reason — `asset()` because it lives in `public/` and is named from JS.
+ */
+const LINKS = [
+    { id: 'github', label: 'GitHub', href: contact.github },
+    { id: 'linkedin', label: 'LinkedIn', href: contact.linkedin },
+    { id: 'resume', label: 'Resume', href: asset('/resume.pdf') },
+    { id: 'email', label: 'Email', href: `mailto:${contact.email}`, sameTab: true },
+]
+
+/**
  * The menu bar.
  *
  * `settings` is the whole System Settings interface — its open state plus both
  * the schemas it edits — bundled into one prop rather than eight, since the bar
  * itself has no use for any of it beyond passing it on. `sound` is separate
- * because the bar genuinely owns that control: it is a menu-bar toggle sitting
- * beside the Wi-Fi icon, exactly where a Mac puts its volume.
+ * because the bar genuinely owns that control: it is a menu-bar volume slider
+ * sitting beside the Wi-Fi icon, exactly where a Mac puts one.
  *
  * The panel is a child of `<nav>` on purpose: it hangs off the bar the way a
  * real menu does (`top: 100%` in the stylesheet), and inherits the bar's
@@ -55,21 +75,25 @@ const Nav = ({ mobile = false, settings, sound }) => {
                 <div className="apple-icon">
                     <img src={asset('/navbar-icons/apple.svg')} alt="" aria-hidden="true" />
                 </div>
-                <div className="nav-item">
-                    <p>Daksh Chauhan</p>
+                <div className="nav-item name">
+                    <p>{profile.name}</p>
                 </div>
-                {/* Decorative menu titles — there is no menu behind them, and on
-                    a phone they only crowd out the clock. */}
+                {/* On a phone the bar has only enough room for a name and a
+                    clock, and the dock already carries mail and LinkedIn as
+                    icons — so the role and the links stand down there. */}
                 {!mobile && (
                     <>
-                        <div className="nav-item">
-                            <p>File</p>
-                        </div>
-                        <div className="nav-item">
-                            <p>Window</p>
-                        </div>
-                        <div className="nav-item">
-                            <p>Terminal</p>
+                        <p className="nav-role">{profile.role}</p>
+                        <div className="nav-links">
+                            {LINKS.map(link => (
+                                <a
+                                    key={link.id}
+                                    href={link.href}
+                                    {...(link.sameTab ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+                                >
+                                    {link.label}
+                                </a>
+                            ))}
                         </div>
                     </>
                 )}
@@ -98,7 +122,8 @@ const Nav = ({ mobile = false, settings, sound }) => {
                 {/* Beside the Wi-Fi icon, and its own control rather than a row
                     buried in the panel: muting is the one wallpaper setting
                     people reach for in a hurry. Every wallpaper has a voice, so
-                    it is never a dead button. */}
+                    it is never a dead button. Volume itself stays in the panel —
+                    a menu-bar slider was tried and taken back out. */}
                 {sound && (
                     <button
                         type="button"

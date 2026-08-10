@@ -26,6 +26,12 @@ export const DEFAULTS = {
     // portfolio that starts making noise is a portfolio people close.
     sound: false,
     volume: 0.55,
+    // The name of the audio file the visitor put on the Vinyl Hour turntable —
+    // the *name* only. The file itself is far too big for localStorage and
+    // lives in IndexedDB (`utils/trackStore.js`); this is what the panel prints
+    // and what tells `LiveWallpaper` to go and fetch it again. Empty means the
+    // bundled track.
+    trackName: '',
     headline: true,
     displayFont: 'script',
     headlineScale: 1,
@@ -58,7 +64,7 @@ export const CONTROLS = [
     {
         key: 'sound', type: 'toggle', tab: 'wallpaper', section: 'Ambience',
         label: 'Ambient sound',
-        hint: 'Each scene has its own, synthesised on the fly — nothing is downloaded. Also on the menu bar, beside the Wi-Fi icon.',
+        hint: 'Each scene has its own, synthesised on the fly — Vinyl Hour is the one that plays a real track. Also on the menu bar, beside the Wi-Fi icon.',
     },
     {
         key: 'volume', type: 'range', tab: 'wallpaper', section: 'Ambience', label: 'Volume',

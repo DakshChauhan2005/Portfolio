@@ -3,6 +3,7 @@ import { CONTROLS as DESKTOP_CONTROLS } from '../data/desktop'
 import { DISPLAY_FONTS, UI_FONTS, ensureDisplayFonts } from '../data/fonts'
 import { WALLPAPERS } from '../data/wallpapers'
 import { CONTROLS as ANIMATION_CONTROLS, EFFECTS } from '../data/windowAnimation'
+import { clearTrack, setTrack } from '../utils/trackStore'
 import SettingsField from './SettingsField'
 import './settingsPanel.scss'
 
@@ -33,10 +34,12 @@ const sectionsOf = (controls, settings) => {
  *   Fonts      the interface face, and the face the wallpaper's headline is set in
  *   Window     the open/close animation — this used to be the whole panel
  *
- * Everything except the three pickers is rendered from a CONTROLS schema
- * (`data/desktop.js` and `data/windowAnimation.js`) through `SettingsField`.
- * The pickers are hand-written because each one has to *preview* what it
- * selects: a wallpaper as its own gradient, a typeface set in itself.
+ * Everything except the three pickers and the vinyl track row is rendered from
+ * a CONTROLS schema (`data/desktop.js` and `data/windowAnimation.js`) through
+ * `SettingsField`. The pickers are hand-written because each one has to
+ * *preview* what it selects — a wallpaper as its own gradient, a typeface set
+ * in itself — and the track row because a schema describes numbers, toggles and
+ * enums, and its value is a file.
  *
  * Reset belongs to whichever schema the visible tab edits, so resetting the
  * animation can't silently throw away a chosen wallpaper.
@@ -73,6 +76,79 @@ const WallpaperPicker = ({ value, onPick }) => (
         ))}
     </div>
 )
+
+/**
+ * Big enough that a phone on a slow connection would notice, small enough that
+ * a whole side of an album fits at a sane bitrate. Nothing is uploaded, so this
+ * is about the visitor's own memory, not about bandwidth.
+ */
+const MAX_TRACK = 25 * 1024 * 1024
+
+/**
+ * The record on the Vinyl Hour turntable — the only setting whose value is a
+ * *file*. It goes to IndexedDB (`utils/trackStore.js`) and the settings object
+ * keeps just its name, which is why this is hand-written rather than a CONTROLS
+ * entry: the schema describes numbers, toggles and enums, and a Blob is none of
+ * those.
+ *
+ * Shown only while Vinyl Hour is the wallpaper that is up, because it means
+ * nothing under any of the other seven.
+ */
+const TrackPicker = ({ name, onPick, onClear }) => {
+    const fileRef = useRef(null)
+    const [note, setNote] = useState(null)
+
+    const choose = async (event) => {
+        const file = event.target.files?.[0]
+        // Cleared straight away so that picking the *same* file again after a
+        // Remove still fires a change event — the input keeps its value
+        // otherwise, and the second pick would silently do nothing.
+        event.target.value = ''
+        if (!file) return
+        if (!file.type.startsWith('audio/')) {
+            setNote('That does not look like an audio file.')
+            return
+        }
+        if (file.size > MAX_TRACK) {
+            setNote(`Too big — ${Math.round(MAX_TRACK / 1024 / 1024)} MB is the limit.`)
+            return
+        }
+        const kept = await setTrack(file)
+        onPick(file.name)
+        // A browser in private mode takes the file but cannot keep it. Say so,
+        // rather than letting the track quietly vanish on the next reload.
+        setNote(kept ? null : 'Playing — but this browser will not remember it after a reload.')
+    }
+
+    const remove = () => {
+        clearTrack()
+        onClear()
+        setNote(null)
+    }
+
+    return (
+        <section>
+            <h3>The record</h3>
+            <div className="track">
+                <p className="now">{name || 'The bundled track'}</p>
+                {name && <button type="button" onClick={remove}>Remove</button>}
+                <button type="button" onClick={() => fileRef.current?.click()}>
+                    {name ? 'Replace' : 'Choose'}
+                </button>
+                {/* `hidden`, and opened by the real button beside it: a file
+                    input cannot be restyled, and this keeps one control in the
+                    tab order instead of two. */}
+                <input ref={fileRef} type="file" accept="audio/*" onChange={choose} hidden />
+            </div>
+            {note && <p className="hint" role="status">{note}</p>}
+            <p className="hint">
+                Plays under the crackle while the needle is down — click empty
+                desktop to lift it, and drag the cursor across to slow the
+                platter. Your file stays in this browser and is never uploaded.
+            </p>
+        </section>
+    )
+}
 
 const SettingsPanel = ({ desktop, animation, onClose }) => {
     const panelRef = useRef(null)
@@ -165,6 +241,13 @@ const SettingsPanel = ({ desktop, animation, onClose }) => {
                     </p>
                     <WallpaperPicker value={ds.wallpaper} onPick={(id) => desktop.update('wallpaper', id)} />
                     {desktopSections('wallpaper')}
+                    {ds.wallpaper === 'vinyl' && (
+                        <TrackPicker
+                            name={ds.trackName}
+                            onPick={(name) => desktop.update('trackName', name)}
+                            onClear={() => desktop.update('trackName', '')}
+                        />
+                    )}
                 </div>
             )}
 
@@ -257,7 +340,12 @@ const SettingsPanel = ({ desktop, animation, onClose }) => {
                 )}
                 <button
                     type="button"
-                    onClick={tab === 'window' ? animation.reset : desktop.reset}
+                    // Resetting the desktop clears `trackName`, so the file it
+                    // named has to go with it — otherwise the visitor's audio
+                    // sits in IndexedDB with nothing left pointing at it.
+                    onClick={tab === 'window'
+                        ? animation.reset
+                        : () => { clearTrack(); desktop.reset() }}
                 >
                     {tab === 'window' ? 'Reset animation' : 'Reset desktop'}
                 </button>

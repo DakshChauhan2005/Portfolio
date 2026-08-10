@@ -28,6 +28,14 @@ const LiveWallpaper = lazy(() => import("./components/LiveWallpaper"))
  */
 const DesktopHints = lazy(() => import("./components/DesktopHints"))
 
+/**
+ * The window that opens by itself once the intro is out of the way, so nobody
+ * ever arrives at an empty desk. Skills rather than Projects because it is the
+ * smallest frame in the registry — it answers "what can he do" without burying
+ * the desktop it is sitting on. Set to null to land on the bare desktop again.
+ */
+const GREETING = 'notes'
+
 function App() {
   const desktopRef = useRef(null)
   const dockRef = useRef(null)
@@ -141,6 +149,39 @@ function App() {
   }, [topmost, wm, closeWindow, settings.closeDuration, settings.speed])
 
   useEffect(() => () => clearTimeout(replayTimer.current), [])
+
+  /**
+   * Open one window on the visitor's behalf, so the desktop is never an empty
+   * room. It goes through `wm.open` — the same call the dock makes — so it
+   * grows out of the Skills icon exactly as a click would, with no special
+   * case in the animation.
+   *
+   * Three conditions, each for its own reason:
+   *
+   * - **After the intro** (`boot === 'off'`), or the window would be animating
+   *   from a dock that is still sliding into place behind the black veil.
+   * - **Not on a phone**, where a window is full-screen and opaque and the
+   *   wallpaper pauses behind it — auto-opening there hides the desktop, the
+   *   wallpaper and the tour all at once, on arrival.
+   * - **Not if anything is already open.** The intro is skippable with a tap,
+   *   so a visitor can reach the dock before this runs; stealing focus back
+   *   from a window they chose themselves would be worse than an empty desk.
+   *
+   * The ref makes it once per load rather than once per render — `wm` is a new
+   * object every render, so the dependency list alone would not hold it.
+   */
+  const greeted = useRef(false)
+  useEffect(() => {
+    if (greeted.current || boot !== 'off' || !GREETING) return
+    // Marked before the other two checks, not after: this is a decision taken
+    // once, at the moment the intro ends. Bailing without marking would let a
+    // narrow window that is later dragged wider spawn the greeting minutes in,
+    // long after it could read as a welcome.
+    greeted.current = true
+    if (isMobile) return
+    if (Object.values(wm.windows).some(w => w.open)) return
+    wm.open(GREETING)
+  }, [boot, isMobile, wm])
 
   /**
    * Each window is its own chunk, so the first paint carries only the shell.

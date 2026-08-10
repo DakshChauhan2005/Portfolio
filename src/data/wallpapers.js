@@ -82,7 +82,7 @@ export const WALLPAPERS = [
     {
         id: 'vinyl',
         name: 'Vinyl Hour',
-        hint: 'the cursor sets the spin · click drops the needle',
+        hint: 'the cursor sets the spin · click lifts the needle',
         swatch: 'linear-gradient(150deg,#120e12,#2a1d22)',
         dot: '#c07a6a',
         motif: 'radial-gradient(circle at 50% 50%,rgba(220,150,120,.5) 0 8%,rgba(0,0,0,.6) 8% 42%,transparent 43%)',

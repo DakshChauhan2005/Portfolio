@@ -1,25 +1,43 @@
 /**
- * One ambient voice per live wallpaper, synthesised with the Web Audio API.
+ * One ambient voice per live wallpaper, built with the Web Audio API.
  *
- * Nothing is downloaded: rain is filtered noise, the motorcycle is two detuned
- * saws through a lowpass, the record is a crackle loop over a triangle chord.
- * That keeps the whole soundtrack at zero bytes of payload — which matters,
- * because this is a portfolio, not a music site.
+ * Almost nothing is downloaded: rain is filtered noise, the motorcycle is two
+ * detuned saws through a lowpass, the record's crackle and pops are a noise
+ * loop with a gain that spikes. That keeps the soundtrack at close to zero
+ * bytes — which matters, because this is a portfolio, not a music site.
  *
- * A voice is built by `VOICES[sceneId](ctx, destination)` and returns:
+ * **Vinyl Hour is the one exception**, and deliberately: a turntable playing
+ * synthesised pad is a joke that lands once. It plays a real audio file. The
+ * file only ever downloads when ambience is *on* and that scene is up, which is
+ * the entire reason this module is behind the wallpaper's lazy chunk.
+ *
+ * A voice is built by `VOICES[sceneId](ctx, destination, options)` and returns:
  *
  *   g       its own GainNode, already connected to `destination`. The caller
  *           ramps this to fade a voice in or out; it starts at 0.
  *   stop()  tear down every source and interval it owns.
  *   update(p)  optional — called ~11×/s with the smoothed pointer
- *              `{ x, y, hot }` in 0..1, so a scene can be *played* as well as
- *              watched. Always via `setTargetAtTime`, never a bare assignment,
- *              or the parameter steps and the speakers click.
+ *              `{ x, y, hot }` in 0..1, plus whatever the scene's own `voice(s)`
+ *              hook adds, so a scene can be *played* as well as watched. Always
+ *              via `setTargetAtTime`, never a bare assignment, or the parameter
+ *              steps and the speakers click.
  *   hit()   optional — the pointer went down on empty desktop.
  *
  * Keyed by the ids in `wallpapers.js`. A scene with no entry here is simply
  * silent — no special case needed to add one that makes no noise.
  */
+
+import { asset } from '../utils/asset'
+
+/**
+ * The record on the turntable when the visitor hasn't supplied one of their
+ * own. **This file is not in the repo** — drop an audio file at that path and
+ * it plays; leave it out and Vinyl Hour is surface noise with no music, which
+ * is a deliberate, silent fallback rather than an error. Through `asset()`
+ * because the site is served from a subpath and Vite does not rewrite paths
+ * inside JS strings.
+ */
+export const BUNDLED_TRACK = asset('/audio/vinyl-hour.mp3')
 
 /**
  * Two seconds of white noise, reused by every source that needs it. Cached per
@@ -41,6 +59,35 @@ function noise(ac) {
     source.loop = true
     source.start()
     return source
+}
+
+/**
+ * Decoded audio files, per context and per URL — the same shape as
+ * `noiseBuffers` above and for the same reason: an AudioBuffer belongs to the
+ * context that decoded it. Cached so that muting and unmuting, or switching
+ * away from the scene and back, doesn't re-download the track.
+ */
+const trackBuffers = new WeakMap()
+
+/**
+ * Fetch and decode a track. **Never rejects** — every failure resolves to null
+ * and the caller plays the surface noise alone. A missing wallpaper soundtrack
+ * is not something to put in front of a visitor.
+ */
+function loadTrack(ac, url) {
+    if (!url) return Promise.resolve(null)
+    let byUrl = trackBuffers.get(ac)
+    if (!byUrl) { byUrl = new Map(); trackBuffers.set(ac, byUrl) }
+
+    let pending = byUrl.get(url)
+    if (!pending) {
+        pending = fetch(url)
+            .then(response => (response.ok ? response.arrayBuffer() : Promise.reject(response.status)))
+            .then(bytes => ac.decodeAudioData(bytes))
+            .catch(() => null)
+        byUrl.set(url, pending)
+    }
+    return pending
 }
 
 const osc = (ac, type, f) => {
@@ -235,22 +282,33 @@ export const VOICES = {
         }
     },
 
-    vinyl(ac, out) {
+    /**
+     * The one voice that plays a *recording*. Surface noise is still
+     * synthesised — the crackle, the hiss, the random pops are what make it a
+     * record rather than an MP3 — but the music itself is `track`, looped
+     * through the same warm lowpass so it sits under the noise instead of on
+     * top of it.
+     *
+     * Everything about the load is forgiving on purpose. No track configured, a
+     * 404, a file the browser can't decode: `loadTrack` resolves null, the
+     * surface noise plays on its own, and the scene is a turntable with nothing
+     * on it. Nobody sees an error for a wallpaper.
+     */
+    vinyl(ac, out, { track } = {}) {
         const g = gain(ac, 0)
         const crackle = noise(ac)
         const cg = gain(ac, 0.05)
         chain(crackle, filt(ac, 'highpass', 2400, 0.6), cg, g)
         const hiss = noise(ac)
         chain(hiss, filt(ac, 'bandpass', 5200, 0.4), gain(ac, 0.018), g)
-        const warm = filt(ac, 'lowpass', 900, 0.6)
-        warm.connect(g)
-        const chord = [110, 164.8, 207.7, 261.6].map(f => {
-            const o = osc(ac, 'triangle', f)
-            const og = gain(ac, 0.028)
-            o.connect(og); og.connect(warm)
-            return o
-        })
+        // `music` is the needle: the track is always running, and lifting the
+        // arm fades this rather than stopping the source, so dropping it again
+        // lands where the record has got to instead of restarting the side.
+        const warm = filt(ac, 'lowpass', 5600, 0.4)
+        const music = gain(ac, 0)
+        chain(warm, music, g)
         g.connect(out)
+
         // A pop is the crackle gain spiking for four milliseconds.
         const pop = () => {
             const t = ac.currentTime
@@ -260,13 +318,41 @@ export const VOICES = {
             cg.gain.exponentialRampToValueAtTime(0.05, t + 0.07)
         }
         const timer = setInterval(() => { if (Math.random() < 0.55) pop() }, 320)
+
+        // The source arrives whenever the fetch and decode finish, which may be
+        // after the visitor has already lifted the needle or slowed the platter
+        // — so the two live values are held here and applied on arrival.
+        let source = null
+        let stopped = false
+        let rate = 1
+        loadTrack(ac, track).then(buffer => {
+            if (stopped || !buffer) return
+            source = ac.createBufferSource()
+            source.buffer = buffer
+            source.loop = true
+            source.playbackRate.value = rate
+            source.connect(warm)
+            source.start()
+        })
+
         return {
             g,
-            stop: () => { crackle.stop(); hiss.stop(); chord.forEach(o => o.stop()); clearInterval(timer) },
-            // Slowing the record detunes it flat, like a hand on the platter.
+            stop: () => {
+                stopped = true
+                crackle.stop(); hiss.stop(); clearInterval(timer)
+                try { source?.stop() } catch { /* never started */ }
+            },
             update: (p) => {
-                const detune = ((p.hot ? 0.25 + p.x * 1.9 : 1) - 1) * 120
-                chord.forEach(o => o.detune.setTargetAtTime(detune, ac.currentTime, 0.4))
+                const t = ac.currentTime
+                // `playing` is the needle, straight off the scene. A scene that
+                // doesn't report one is treated as playing, so this can never
+                // be silently muted by a missing field.
+                music.gain.setTargetAtTime(p.playing === false ? 0 : 1, t, 0.3)
+                // The platter *is* the transport: slow it with the cursor and
+                // the track slows and drops in pitch with it, the way a hand on
+                // the record does. Clamped, or a wild spin becomes a chipmunk.
+                rate = Math.min(2, Math.max(0.25, p.spin ?? 1))
+                source?.playbackRate.setTargetAtTime(rate, t, 0.4)
             },
             hit: pop,
         }

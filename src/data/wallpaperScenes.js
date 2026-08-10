@@ -17,6 +17,11 @@
  *                  smoothed pointer, whether it is over free desktop (`hot`),
  *                  the motion multiplier and an idle ramp.
  *   click(s, x, y) the pointer went down on empty desktop.
+ *   voice(s)       optional. Extra fields merged into what `LiveWallpaper`
+ *                  hands the scene's ambient voice, so a scene can *tell* its
+ *                  voice what it is doing — the vinyl needle is up, the platter
+ *                  is turning at a third speed — without the wallpaper
+ *                  component having to know a thing about either.
  *
  * All of a scene's mutable state lives in the object `init` returns, so
  * switching scenes is just calling `init` again — there is no shared canvas
@@ -503,7 +508,10 @@ const SCENES = [
     {
         id: 'vinyl',
         backdrop: 'linear-gradient(150deg,#120e12 0%,#1d151b 48%,#2a1d22 100%)',
-        init() { return { a: 0, spin: 1, pulse: [], needle: 0, playing: false } },
+        // The needle starts down: turning ambience on and hearing only surface
+        // noise until you happen to click reads as a broken button, not as a
+        // stopped record. Clicking lifts it, and the music fades with it.
+        init() { return { a: 0, spin: 1, pulse: [], needle: 0, playing: true } },
         draw(s, c) {
             const { ctx, w, h, t, dt, mx, hot, motion } = c
             s.spin = ease(s.spin, hot ? 0.25 + (mx / w) * 1.9 : 1, 0.03)
@@ -537,13 +545,34 @@ const SCENES = [
             ctx.fillStyle = '#120e12'; ctx.beginPath(); ctx.arc(0, 0, R * 0.035, 0, 7); ctx.fill()
             ctx.restore()
 
-            const ax = cx + R * 1.06, ay = cy - R * 0.82
-            ctx.save(); ctx.translate(ax, ay); ctx.rotate(-0.62 + s.needle * 0.5)
+            // The tonearm. Its pivot sits off the record's upper right and the
+            // arm angle is *solved* from where the stylus should land — parked
+            // just outside the rim with the needle up, on the outer groove with
+            // it down. A hand-tuned angle drawn outward from the pivot is what
+            // left the arm floating in empty space beside the platter.
+            const px = cx + R * 1.32, py = cy - R * 0.42
+            const arm = R
+            const reach = Math.hypot(px - cx, py - cy)
+            const stylus = R * (1.12 - s.needle * 0.2)
+            // Law of cosines on the triangle pivot–centre–stylus: the angle
+            // between "pivot towards the record's centre" and the arm itself.
+            const swing = Math.acos(Math.min(1, Math.max(-1,
+                (reach * reach + arm * arm - stylus * stylus) / (2 * reach * arm))))
+
+            // The base is bolted to the plinth, so it is drawn upright, before
+            // the rotation — only the arm above it turns.
+            ctx.fillStyle = 'rgba(226,206,196,.16)'
+            ctx.beginPath(); ctx.roundRect(px - 14, py - 14, 28, 28, 8); ctx.fill()
+
+            ctx.save()
+            ctx.translate(px, py)
+            ctx.rotate(Math.atan2(cy - py, cx - px) - swing)
             ctx.strokeStyle = 'rgba(226,206,196,.5)'; ctx.lineWidth = 4; ctx.lineCap = 'round'
-            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(R * 0.92, R * 0.5); ctx.stroke()
+            ctx.beginPath(); ctx.moveTo(-R * 0.13, 0); ctx.lineTo(arm - 9, 0); ctx.stroke()
             ctx.fillStyle = 'rgba(226,206,196,.6)'
-            ctx.beginPath(); ctx.roundRect(R * 0.88, R * 0.46, 16, 9, 2); ctx.fill()
-            ctx.beginPath(); ctx.arc(0, 0, 9, 0, 7); ctx.fill()
+            ctx.beginPath(); ctx.roundRect(arm - 13, -5, 14, 10, 2); ctx.fill()  // headshell
+            ctx.beginPath(); ctx.arc(0, 0, 7, 0, 7); ctx.fill()                  // pivot
+            ctx.beginPath(); ctx.arc(-R * 0.13, 0, 6, 0, 7); ctx.fill()          // counterweight
             ctx.restore()
 
             for (let i = s.pulse.length - 1; i >= 0; i--) {
@@ -563,6 +592,9 @@ const SCENES = [
             }
         },
         click(s) { s.playing = !s.playing; s.pulse.push({ t: 0 }) },
+        // What the voice needs off this scene: the needle gates the track, and
+        // the platter's speed is its playback rate.
+        voice: (s) => ({ playing: s.playing, spin: s.spin }),
     },
 ]
 

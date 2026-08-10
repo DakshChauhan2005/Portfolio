@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ensureDisplayFonts, getDisplayFont, scaled } from '../data/fonts'
 import { profile } from '../data/profile'
 import { SCENE_ENGINES, ease } from '../data/wallpaperScenes'
-import VOICES from '../data/wallpaperVoices'
+import VOICES, { BUNDLED_TRACK } from '../data/wallpaperVoices'
+import { getTrack } from '../utils/trackStore'
 import './liveWallpaper.scss'
 
 /**
@@ -118,6 +119,48 @@ export default function LiveWallpaper({ wallpaperId, settings, mobile = false, p
     useEffect(() => {
         if (settings.headline) ensureDisplayFonts()
     }, [settings.headline])
+
+    /**
+     * The visitor's own record, if they have put one on. The bytes live in
+     * IndexedDB — far too big for the settings object, which carries only the
+     * file's *name*; that name is both what the panel prints and what tells
+     * this effect to go and look again.
+     *
+     * The object URL is revoked when it changes, so swapping tracks a dozen
+     * times leaks nothing. Until the read comes back this is null and the
+     * bundled track stands in, which is invisible in practice: audio cannot
+     * start before the visitor's first gesture anyway, and the read is over
+     * long before that.
+     */
+    const [customTrack, setCustomTrack] = useState(null)
+    useEffect(() => {
+        let url = null
+        let cancelled = false
+        // Both branches resolve through a promise, so the state is never set
+        // synchronously in the effect body — clearing the track has to take the
+        // same route back as choosing one.
+        const pick = settings.trackName
+            ? getTrack().then(record => (record?.blob ? URL.createObjectURL(record.blob) : null))
+            : Promise.resolve(null)
+
+        pick.then(resolved => {
+            // Already switched away: revoke here, since the cleanup below ran
+            // before this URL existed and will never see it.
+            if (cancelled) {
+                if (resolved) URL.revokeObjectURL(resolved)
+                return
+            }
+            url = resolved
+            setCustomTrack(resolved)
+        })
+
+        return () => {
+            cancelled = true
+            if (url) URL.revokeObjectURL(url)
+        }
+    }, [settings.trackName])
+
+    const track = customTrack ?? BUNDLED_TRACK
 
     /**
      * Re-seed the scene whenever it changes. A layout effect, so the first
@@ -289,9 +332,18 @@ export default function LiveWallpaper({ wallpaperId, settings, mobile = false, p
                 return
             }
 
+            // The pointer, plus whatever the scene chooses to tell its voice
+            // about itself — the vinyl needle being up, the platter's speed.
+            // That hook is how a voice reacts to the *scene* without this
+            // component knowing what either of them is made of.
             if (l.voice?.update && now - (l.lastVoiceUpdate || 0) > 90) {
                 l.lastVoiceUpdate = now
-                l.voice.update({ x: p.smoothX, y: p.smoothY, hot: p.active })
+                l.voice.update({
+                    x: p.smoothX,
+                    y: p.smoothY,
+                    hot: p.active,
+                    ...l.scene.voice?.(l.state),
+                })
             }
 
             // Written straight to the node: this is the only DOM the loop
@@ -384,10 +436,13 @@ export default function LiveWallpaper({ wallpaperId, settings, mobile = false, p
             previous.g.gain.setTargetAtTime(0, l.audio.currentTime, 0.25)
             setTimeout(() => { try { previous.stop() } catch { /* already torn down */ } }, 900)
         }
-        l.voice = build ? build(l.audio, l.master) : null
+        // `track` only means anything to the vinyl voice; the rest ignore the
+        // options object entirely, which is why changing the record does not
+        // need a branch on the scene id here.
+        l.voice = build ? build(l.audio, l.master, { track }) : null
         l.voice?.g.gain.setTargetAtTime(1, l.audio.currentTime, 0.6)
         return undefined
-    }, [settings.sound, scene])
+    }, [settings.sound, scene, track])
 
     /** Volume is its own effect: changing it must not rebuild the voice. */
     useEffect(() => {
