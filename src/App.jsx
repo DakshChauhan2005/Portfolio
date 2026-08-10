@@ -8,7 +8,6 @@ import Nav from "./components/Nav"
 import MacWindow from "./components/windows/MacWindow"
 import registry, { preloadAll } from "./components/windows/registry"
 import { getUiFont } from "./data/fonts"
-import { isLive } from "./data/wallpapers"
 import useAnimationSettings from "./hooks/useAnimationSettings"
 import useDesktopSettings from "./hooks/useDesktopSettings"
 import useIsMobile from "./hooks/useIsMobile"
@@ -17,10 +16,17 @@ import useWindowManager from "./hooks/useWindowManager"
 
 /**
  * A chunk of its own, like the windows: the eight scenes, the Web Audio graph
- * and the display webfonts only arrive if a live wallpaper is actually chosen.
- * A visitor who leaves the photo up downloads none of it.
+ * and the display webfonts arrive after first paint rather than competing with
+ * it. Until then the gradient `app.scss` paints on `body` — the default
+ * scene's own backdrop — is what's on screen.
  */
 const LiveWallpaper = lazy(() => import("./components/LiveWallpaper"))
+
+/**
+ * Also its own chunk, and one most sessions never reach for twice: the little
+ * tour that plays once after the boot intro. Nothing else imports it.
+ */
+const DesktopHints = lazy(() => import("./components/DesktopHints"))
 
 function App() {
   const desktopRef = useRef(null)
@@ -35,6 +41,16 @@ function App() {
    */
   const [boot, setBoot] = useState(() => (hasBooted() ? 'off' : 'playing'))
   const [bootScale, setBootScale] = useState(1)
+
+  /**
+   * The tour follows the intro, so it plays exactly as often as the intro does
+   * — once a session, and never on a reload. Deciding it here, off the *first*
+   * boot state, is what keeps that true: `boot` is 'off' both after the intro
+   * has played and when there was no intro to play, and only this tells them
+   * apart.
+   */
+  const [hints, setHints] = useState(() => !hasBooted())
+  const dismissHints = useCallback(() => setHints(false), [])
 
   const onBootReveal = useCallback((scale) => {
     setBootScale(scale)
@@ -73,7 +89,6 @@ function App() {
    * whichever tab is showing.
    */
   const desktop = useDesktopSettings()
-  const wallpaperIsLive = isLive(desktop.settings.wallpaper)
 
   /**
    * The chosen interface face, handed to the whole desktop as one custom
@@ -146,12 +161,17 @@ function App() {
    * since there is no Cmd+W a browser will let us have. The terminal's input
    * ignores Esc, so this still works while typing in it.
    *
-   * The settings panel takes the key first when it is up: it is the most
-   * recently opened thing on screen, so it is what Esc should dismiss.
+   * Newest thing on screen wins, which is what Esc is expected to do: the
+   * tour if it is still running, then the settings panel, then the frontmost
+   * window.
    */
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key !== 'Escape' || event.defaultPrevented) return
+      if (hints) {
+        setHints(false)
+        return
+      }
       if (settingsOpen) {
         setSettingsOpen(false)
         return
@@ -160,7 +180,7 @@ function App() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [topmost, closeWindow, settingsOpen])
+  }, [topmost, closeWindow, settingsOpen, hints])
 
   return (
     <>
@@ -172,25 +192,23 @@ function App() {
         style={boot === 'off' ? mainStyle : { ...mainStyle, '--boot-k': bootScale }}
         inert={boot === 'playing'}
       >
-        {/* Under everything, and only when a live scene is chosen — the still
-            photo is a `body` background that needs no component at all. No
-            Suspense fallback: there is nothing sensible to show in a
-            wallpaper's place, and the photo underneath is already on screen
-            while the chunk downloads. */}
-        {wallpaperIsLive && (
-          <ErrorBoundary label="Wallpaper" silent>
-            <Suspense fallback={null}>
-              <LiveWallpaper
-                wallpaperId={desktop.settings.wallpaper}
-                settings={desktop.settings}
-                mobile={isMobile}
-                // On a phone an open window fills the desktop and is opaque, so
-                // every frame drawn behind it is spent on pixels nobody sees.
-                paused={isMobile && topmost != null}
-              />
-            </Suspense>
-          </ErrorBoundary>
-        )}
+        {/* Under everything. No Suspense fallback: there is nothing sensible to
+            show in a wallpaper's place, and the gradient on `body` is already
+            painted while the chunk downloads. The boundary is `silent` for the
+            same reason — a failed chunk leaves that gradient standing rather
+            than papering the desktop with an alert. */}
+        <ErrorBoundary label="Wallpaper" silent>
+          <Suspense fallback={null}>
+            <LiveWallpaper
+              wallpaperId={desktop.settings.wallpaper}
+              settings={desktop.settings}
+              mobile={isMobile}
+              // On a phone an open window fills the desktop and is opaque, so
+              // every frame drawn behind it is spent on pixels nobody sees.
+              paused={isMobile && topmost != null}
+            />
+          </Suspense>
+        </ErrorBoundary>
 
         <Nav
           mobile={isMobile}
@@ -202,7 +220,6 @@ function App() {
           }}
           sound={{
             on: desktop.settings.sound,
-            live: wallpaperIsLive,
             onToggle: () => desktop.update('sound', !desktop.settings.sound),
           }}
         />
@@ -252,6 +269,18 @@ function App() {
         </div>
 
         <Dock dockRef={dockRef} wm={dwm} />
+
+        {/* The tour, once a session, straight after the intro. Mounted only
+            once the desktop is fully revealed — it points at the menu bar and
+            the dock, which are still sliding in before that — and inside
+            <main> so it inherits the chosen interface face. */}
+        {hints && boot === 'off' && (
+          <ErrorBoundary label="Tour" silent>
+            <Suspense fallback={null}>
+              <DesktopHints mobile={isMobile} onDone={dismissHints} />
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </main>
 
       {boot !== 'off' && (

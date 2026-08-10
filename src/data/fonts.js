@@ -1,10 +1,10 @@
 /**
  * Typefaces the visitor can choose between, in two independent sets.
  *
- * DISPLAY_FONTS style the headline drawn over a live wallpaper. They are web
+ * DISPLAY_FONTS style the headline drawn over the wallpaper. They are web
  * fonts, so they cost a request — which is why `LiveWallpaper` is the only
- * thing that injects `GOOGLE_FONTS_HREF`, and it lives in that window's lazy
- * chunk. Pick the still photo and the site never asks Google for anything.
+ * thing that injects `GOOGLE_FONTS_HREF`, it lives in that lazy chunk, and it
+ * is asked for only while the headline is switched on.
  *
  * UI_FONTS restyle the desktop itself — menu bar, dock, window chrome — and are
  * deliberately *system* stacks only. That setting applies on every wallpaper
@@ -33,10 +33,10 @@ export const GOOGLE_FONTS_HREF =
  * Add the display-font stylesheet to the document, once per page load.
  *
  * Called from two places, both of which mean "a display face is about to be
- * shown": `LiveWallpaper` mounting, and the settings panel's Fonts tab opening
- * (its list previews each face in itself). A visitor who never leaves the photo
- * wallpaper and never opens that tab makes no request to Google at all, which
- * is the whole reason this isn't a `<link>` in index.html.
+ * shown": `LiveWallpaper` drawing the headline, and the settings panel's Fonts
+ * tab opening (its list previews each face in itself). It is off the critical
+ * path either way — a request that waited for the wallpaper chunk can't hold up
+ * first paint — which is the whole reason this isn't a `<link>` in index.html.
  */
 export function ensureDisplayFonts() {
     if (typeof document === 'undefined') return

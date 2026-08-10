@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CONTROLS as DESKTOP_CONTROLS } from '../data/desktop'
 import { DISPLAY_FONTS, UI_FONTS, ensureDisplayFonts } from '../data/fonts'
-import { WALLPAPERS, isLive } from '../data/wallpapers'
+import { WALLPAPERS } from '../data/wallpapers'
 import { CONTROLS as ANIMATION_CONTROLS, EFFECTS } from '../data/windowAnimation'
 import SettingsField from './SettingsField'
 import './settingsPanel.scss'
@@ -86,7 +86,8 @@ const SettingsPanel = ({ desktop, animation, onClose }) => {
     }, [])
 
     // The Fonts tab previews each display face in itself, so it needs the
-    // webfonts even when the wallpaper is the photo and nothing else has asked.
+    // webfonts even when the headline is switched off and nothing else has
+    // asked for them. `ensureDisplayFonts` memoises, so this is usually a no-op.
     useEffect(() => {
         if (tab === 'fonts') ensureDisplayFonts()
     }, [tab])
@@ -103,7 +104,6 @@ const SettingsPanel = ({ desktop, animation, onClose }) => {
     }
 
     const ds = desktop.settings
-    const liveWallpaper = isLive(ds.wallpaper)
     const effect = EFFECTS.find(e => e.value === animation.settings.effect)
 
     const desktopSections = (name) =>
@@ -160,9 +160,8 @@ const SettingsPanel = ({ desktop, animation, onClose }) => {
             {tab === 'wallpaper' && (
                 <div className="tab-panel" id="settings-panel-wallpaper" role="tabpanel" aria-labelledby="settings-tab-wallpaper">
                     <p className="lede">
-                        {liveWallpaper
-                            ? 'Live wallpapers are drawn frame by frame and answer the cursor — move it over empty desktop, and click.'
-                            : 'The still photo, painted before anything else loads. Pick one of the live scenes below to have the desktop react to you.'}
+                        Every wallpaper is drawn frame by frame and answers the cursor
+                        — move it over empty desktop, and click.
                     </p>
                     <WallpaperPicker value={ds.wallpaper} onPick={(id) => desktop.update('wallpaper', id)} />
                     {desktopSections('wallpaper')}
@@ -219,12 +218,10 @@ const SettingsPanel = ({ desktop, animation, onClose }) => {
                                 </button>
                             ))}
                         </div>
-                        {!liveWallpaper && (
-                            <p className="hint">
-                                The headline is drawn on the live wallpapers only — pick
-                                one on the Wallpaper tab to see this.
-                            </p>
-                        )}
+                        <p className="hint">
+                            The name drawn across the wallpaper. Hide it, or resize it,
+                            below.
+                        </p>
                     </section>
 
                     {desktopSections('fonts')}

@@ -1,0 +1,180 @@
+// The post-boot tour. Above the menu bar (1000) and the dock (900) so its ring
+// can be drawn *over* the thing it is ringing, but well under the boot overlay
+// (5000), which must never have anything on top of it.
+//
+// The root takes no pointer events: the desktop underneath has to stay live,
+// because the first card is asking the visitor to click it. Only the card's
+// own controls opt back in.
+.desktop-hints {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    pointer-events: none;
+
+    // Card width. Mirrored by CARD_W in DesktopHints.jsx, which does the
+    // clamping against the viewport in JS.
+    --hint-card-w: 300px;
+}
+
+// Drawn around the element the card is talking about. Measured in JS from the
+// real DOM, so it follows the menu bar and the dock rather than assuming where
+// they are.
+.desktop-hints .ring {
+    position: fixed;
+    box-shadow:
+        0 0 0 1.5px rgba(255, 255, 255, .8),
+        0 0 0 6px rgba(255, 255, 255, .1),
+        0 6px 26px rgba(0, 0, 0, .45);
+    animation: hint-ring-in .4s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.desktop-hints .card {
+    position: fixed;
+    width: min(var(--hint-card-w), calc(100vw - 24px));
+    padding: .75rem .8rem .8rem;
+
+    border-radius: .8rem;
+    background: rgba(20, 21, 26, .84);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 0 0 .5px rgba(255, 255, 255, .14), 0 18px 44px rgba(0, 0, 0, .5);
+
+    color: whitesmoke;
+    text-align: left;
+    // The buttons inside need clicks; the rest of the overlay still doesn't.
+    pointer-events: auto;
+    // Keeps the progress bar's corners inside the card's own.
+    overflow: hidden;
+
+    animation: hint-card-in .38s cubic-bezier(.22, 1, .36, 1) both;
+
+    // The one with no target: centred over the desktop, clear of the dock.
+    &.centred {
+        left: 50%;
+        bottom: 22%;
+        transform: translateX(-50%);
+        animation-name: hint-card-in-centred;
+    }
+
+    .title {
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .01em;
+    }
+
+    .body {
+        margin-top: .3rem;
+        font-size: .75rem;
+        line-height: 1.45;
+        color: rgba(235, 238, 245, .72);
+    }
+
+    .foot {
+        margin-top: .7rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+    }
+
+    .dots {
+        display: flex;
+        gap: 5px;
+
+        .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .22);
+            transition: background .25s ease;
+
+            &.on {
+                background: rgba(255, 255, 255, .8);
+            }
+        }
+    }
+
+    button {
+        appearance: none;
+        border: 0;
+        padding: .3rem .6rem;
+        border-radius: .45rem;
+        background: rgba(255, 255, 255, .12);
+        color: inherit;
+        font: inherit;
+        font-size: .72rem;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(255, 255, 255, .22);
+        }
+    }
+
+    // Time left on this card. A CSS animation with its duration set inline, so
+    // nothing in JS has to tick it — and under prefers-reduced-motion the
+    // global rule collapses it to nothing rather than leaving it crawling.
+    .progress {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 100%;
+        transform-origin: left;
+        background: rgba(255, 255, 255, .45);
+        animation: hint-progress linear both;
+    }
+}
+
+// The little triangle pointing back at the target — a border triangle rather
+// than a rotated square, so it needs no clipping to keep its far half off the
+// card's face. A sibling of the card, not a child: the card clips its overflow
+// to keep the progress bar inside its corners, and would clip this too.
+//
+// `left` and `top` are set inline, from the target's centre, so the caret keeps
+// pointing even when the card has been clamped away by the edge of the screen.
+.desktop-hints .caret {
+    position: fixed;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    animation: hint-card-in .38s cubic-bezier(.22, 1, .36, 1) both;
+
+    &.below {
+        border-bottom: 7px solid rgba(20, 21, 26, .84);
+    }
+
+    &.above {
+        border-top: 7px solid rgba(20, 21, 26, .84);
+    }
+}
+
+@keyframes hint-card-in {
+    from { opacity: 0; translate: 0 6px; }
+    to { opacity: 1; translate: 0 0; }
+}
+
+// Its own copy, because the centred card is already using `transform` to sit on
+// the midline and the two would overwrite each other.
+@keyframes hint-card-in-centred {
+    from { opacity: 0; translate: 0 8px; }
+    to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes hint-ring-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes hint-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+@media (max-width: 767px) {
+    .desktop-hints .card {
+        // A phone's dock is a full-width tab bar, so a card sitting above it
+        // wants the whole width too.
+        --hint-card-w: 340px;
+    }
+}

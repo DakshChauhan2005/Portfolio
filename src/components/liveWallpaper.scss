@@ -10,9 +10,9 @@
     overflow: hidden;
     pointer-events: none;
 
-    // The still photo underneath stays loaded and painted; every backdrop here
-    // is opaque, so it is fully covered while a scene is up and reappears the
-    // moment the visitor picks it again.
+    // Every backdrop here is opaque, so the gradient app.scss paints on `body`
+    // is fully covered once a scene is up — it only ever shows in the moment
+    // before this chunk arrives.
     .backdrop {
         position: absolute;
         inset: 0;

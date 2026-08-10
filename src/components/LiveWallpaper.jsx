@@ -9,9 +9,9 @@ import './liveWallpaper.scss'
  * The live wallpaper: one `<canvas>` behind the whole desktop, painted from a
  * requestAnimationFrame loop, plus the ambient voice that goes with the scene.
  *
- * Mounted only while a live wallpaper is selected, and lazily — so the scenes,
- * the audio graph and the display webfonts are a chunk of their own that a
- * visitor who stays on the photo never downloads.
+ * Loaded lazily — the scenes, the audio graph and the display webfonts are a
+ * chunk of their own, so none of it competes with first paint. The gradient
+ * `app.scss` paints on `body` stands in for the moment before it lands.
  *
  * Three things are worth knowing before editing this:
  *
@@ -75,12 +75,12 @@ function resumeOnGesture(ac) {
  */
 const overDesktop = (target) =>
     target instanceof Element
-        ? !target.closest('.window, .mobile-window, .react-draggable, nav, .dock, .settings-panel, .boot')
+        ? !target.closest('.window, .mobile-window, .react-draggable, nav, .dock, .settings-panel, .boot, .desktop-hints')
         : true
 
 export default function LiveWallpaper({ wallpaperId, settings, mobile = false, paused = false }) {
-    // The catalogue has already guaranteed this id is a live one — App only
-    // mounts this component for those — but fall back rather than throw.
+    // The settings sanitiser has already rejected any id not in the catalogue,
+    // but fall back rather than throw if the two ever drift apart.
     const scene = SCENE_ENGINES[wallpaperId] ?? SCENE_ENGINES.dusk
     const rootRef = useRef(null)
     const canvasRef = useRef(null)
@@ -113,8 +113,11 @@ export default function LiveWallpaper({ wallpaperId, settings, mobile = false, p
     })
 
     // The webfonts the headline is set in. Requested here rather than in
-    // index.html so the photo wallpaper costs nothing.
-    useEffect(ensureDisplayFonts, [])
+    // index.html, and only once the headline is actually being drawn, so a
+    // visitor who switches it off never asks Google for anything.
+    useEffect(() => {
+        if (settings.headline) ensureDisplayFonts()
+    }, [settings.headline])
 
     /**
      * Re-seed the scene whenever it changes. A layout effect, so the first

@@ -59,24 +59,18 @@ main{
     overflow: hidden;
 }
 body{
-    // Painted under the wallpaper so the desktop is never a white flash while
-    // the image downloads; it is roughly the photo's darkest tone.
-    background-color: #14181d;
     color: white;
 
-    background-image: url(/mac-wallpaper.jpg);
+    // Every wallpaper is a canvas scene now, and the canvas cannot paint until
+    // React and the LiveWallpaper chunk have both arrived. This gradient is
+    // what the visitor sees until then: it is the default scene's own backdrop
+    // (`dusk` in wallpaperScenes.js), so the real wallpaper resolves *out* of
+    // it rather than cutting over it. Zero bytes, and it paints with the CSS.
+    // **Change the default wallpaper and this changes with it.**
+    background-color: #1d1a26;
+    background-image: linear-gradient(168deg, #1d1a26 0%, #33232c 42%, #54322e 76%, #7a4a30 100%);
     background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-
-// Phones get a 1200x800, 66 kB crop rather than the 2400x1600, 270 kB original
-// — a 390px viewport at DPR 3 is only ~1170 device pixels wide, so the big one
-// is pure waste there. index.html preloads whichever of the two matches.
-@media (max-width: 767px){
-    body{
-        background-image: url(/mac-wallpaper-1200.jpg);
-    }
+    background-attachment: fixed;
 }
 
 // The desktop's half of the boot intro. While BootSequence plays, the menu bar

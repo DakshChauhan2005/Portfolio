@@ -97,8 +97,8 @@ const Nav = ({ mobile = false, settings, sound }) => {
 
                 {/* Beside the Wi-Fi icon, and its own control rather than a row
                     buried in the panel: muting is the one wallpaper setting
-                    people reach for in a hurry. `title` explains itself when
-                    there is nothing to hear — the still photo has no voice. */}
+                    people reach for in a hurry. Every wallpaper has a voice, so
+                    it is never a dead button. */}
                 {sound && (
                     <button
                         type="button"
@@ -106,11 +106,7 @@ const Nav = ({ mobile = false, settings, sound }) => {
                         onClick={sound.onToggle}
                         aria-pressed={sound.on}
                         aria-label={sound.on ? 'Mute ambient sound' : 'Unmute ambient sound'}
-                        title={
-                            sound.live
-                                ? (sound.on ? 'Mute ambient sound' : 'Unmute ambient sound')
-                                : 'Ambient sound — pick a live wallpaper in Settings to hear it'
-                        }
+                        title={sound.on ? 'Mute ambient sound' : 'Unmute ambient sound'}
                     >
                         <SoundIcon on={sound.on} />
                     </button>

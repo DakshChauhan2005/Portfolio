@@ -2,8 +2,8 @@
  * The drawing half of the live wallpapers: the code that actually paints a
  * frame. Split out from `wallpapers.js` on purpose — that file is the catalogue
  * and rides in the entry bundle, while this one is a few hundred lines of
- * canvas work imported only by `LiveWallpaper`. So it ships in that lazy chunk,
- * and a visitor who never leaves the still photo never downloads it.
+ * canvas work imported only by `LiveWallpaper`. So it ships in that lazy chunk
+ * and never competes with first paint.
  *
  * A scene is four things and nothing else:
  *

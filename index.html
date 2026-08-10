@@ -13,23 +13,23 @@
       content="Portfolio of Daksh Chauhan, a full-stack developer working across MERN, REST APIs, IoT and AI-assisted tooling — presented as an interactive macOS desktop."
     />
     <meta name="author" content="Daksh Chauhan" />
-    <meta name="theme-color" content="#1f2a52" />
+    <!-- Mirrors the gradient app.scss paints on `body`, which is the default
+         wallpaper's backdrop — so mobile browser chrome matches the desktop. -->
+    <meta name="theme-color" content="#1d1a26" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
 
-    <!-- The wallpaper is the largest paint on the page, and as a CSS background
-         it would otherwise not start downloading until the stylesheet has been
-         fetched and parsed. `media` mirrors the breakpoint in app.scss, so only
-         the variant that will actually be used is preloaded. -->
-    <link rel="preload" as="image" href="/mac-wallpaper.jpg" media="(min-width: 768px)" fetchpriority="high" />
-    <link rel="preload" as="image" href="/mac-wallpaper-1200.jpg" media="(max-width: 767px)" fetchpriority="high" />
+    <!-- There is no wallpaper image to preload any more: every wallpaper is a
+         canvas scene, and what paints first is a CSS gradient that arrives with
+         the stylesheet. -->
 
     <!-- TODO(og-image): replace with a 1200x630 screenshot of the desktop.
-         Using the wallpaper as a stand-in so link previews aren't blank.
-         These URLs are absolute and hardcoded on purpose: scrapers do not
-         resolve relative paths, so they cannot go through Vite's `base`. If the
-         deploy target changes, these four lines change with it. -->
+         `mac-wallpaper.jpg` is no longer used by the app at all — it stays in
+         public/ purely so link previews aren't blank, and goes the moment a
+         real OG image exists. These URLs are absolute and hardcoded on purpose:
+         scrapers do not resolve relative paths, so they cannot go through
+         Vite's `base`. If the deploy target changes, these lines change too. -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://dakshchauhan2005.github.io/Portfolio/" />
     <meta property="og:title" content="Daksh Chauhan — Full-Stack Developer" />

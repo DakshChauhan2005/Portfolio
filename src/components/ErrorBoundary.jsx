@@ -16,7 +16,8 @@ import './errorBoundary.scss'
  *   onClose optional; renders a second button, used to close a dead window
  *   silent  render nothing instead of the panel. For decoration whose absence
  *           is better than an alert — the live wallpaper falls back to the
- *           photo underneath it rather than papering the desktop with an error.
+ *           gradient underneath it rather than papering the desktop with an
+ *           error, and a broken tour simply doesn't play.
  */
 export default class ErrorBoundary extends React.Component {
     state = { error: null }

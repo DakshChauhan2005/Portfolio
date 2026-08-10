@@ -17,8 +17,8 @@
  *              or the parameter steps and the speakers click.
  *   hit()   optional — the pointer went down on empty desktop.
  *
- * Keyed by the ids in `wallpapers.js`. A scene with no entry here is silent,
- * which is how the still photo works without a special case.
+ * Keyed by the ids in `wallpapers.js`. A scene with no entry here is simply
+ * silent — no special case needed to add one that makes no noise.
  */
 
 /**
