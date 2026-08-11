@@ -7,8 +7,8 @@ you open like apps.
 
 **Live:** <https://dakshchauhan2005.github.io/Portfolio/>
 
-> **TODO(screenshot):** add `docs/screenshot.png` and embed it here — a
-> portfolio README should show the thing before it describes it.
+![The desktop: the Skills and Terminal windows open over the Constellations
+wallpaper, with the menu bar above and the dock below](docs/screenshot.png)
 
 ## Apps
 
@@ -235,18 +235,6 @@ BASE_PATH=/ npm run build     # custom domain, or a <user>.github.io repo
 Two exceptions that are hardcoded absolute URLs and must be edited by hand: the
 `og:image`/`twitter:image` and `og:url` in `index.html`. Scrapers don't resolve
 relative paths.
-
-## Roadmap
-
-Content, the window manager, mobile and accessibility, performance, the desktop
-layer and deploy config are done. Still open:
-
-- CI running lint and build on pull requests — the workflow only runs on push to `main`
-- A custom domain
-- A Lighthouse pass
-- A real 1200×630 OG image (it currently points at the old wallpaper)
-- A screenshot in this README
-- Filling `experience` and `education` in `src/data/profile.js`
 
 ## License
 
