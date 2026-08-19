@@ -18,6 +18,7 @@ export const contact = {
   email: "dakahchauhan111@gmail.com",
   github: "https://github.com/DakshChauhan2005",
   linkedin: "https://www.linkedin.com/in/dakshchauhan-/",
+  leetcode: "https://leetcode.com/u/DakshChauhan132/",
 };
 
 /**

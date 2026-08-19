@@ -93,10 +93,13 @@
     .link{
         background: linear-gradient(to bottom , rgb(202, 62, 202),rgb(136, 9, 136));
     }
+    .leetcode{
+        background: linear-gradient(to bottom , rgb(255, 178, 61), rgb(224, 122, 0));
+    }
 }
 
 // Mobile: the dock stops being a floating panel and becomes a bottom tab bar
-// spanning the screen. Eight icons don't fit across a phone, so it scrolls
+// spanning the screen. Nine icons barely fit across a phone, so it scrolls
 // horizontally instead of overflowing invisibly.
 @media (max-width: 767px) {
     .dock {
@@ -111,10 +114,17 @@
         // don't parse it fall back to flex-start, which is also fine.
         justify-content: safe center;
 
-        // Tuned so all eight icons fit a 390px screen without scrolling; the
-        // overflow-x below is the fallback for narrower phones.
-        gap: .35rem;
+        // Tuned so all nine icons fit a 390px screen without scrolling
+        // (9 x 2.35rem + 8 x .25rem + .8rem = 383px); the overflow-x below is
+        // the fallback for narrower phones. Adding a tenth icon means shrinking
+        // these again or accepting that the bar scrolls on a small phone.
+        gap: .25rem;
         padding-inline: .4rem;
+
+        .icon {
+            width: 2.35rem;
+            height: 2.35rem;
+        }
         padding-top: .5rem;
         // Clears the iOS home indicator when it's there, .9rem when it isn't.
         padding-bottom: calc(.9rem + env(safe-area-inset-bottom, 0px));

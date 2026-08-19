@@ -73,6 +73,7 @@ const Cli = ({ wm, id, mobile = false }) => {
                 `Email    : ${contact.email}`,
                 `GitHub   : ${contact.github}`,
                 `LinkedIn : ${contact.linkedin}`,
+                `LeetCode : ${contact.leetcode}`,
                 '',
                 'Happy to talk about backend work, IoT, or anything half-built.'
             ].join('\n')

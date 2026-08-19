@@ -51,6 +51,7 @@ const SoundIcon = ({ on }) => (
 const LINKS = [
     { id: 'github', label: 'GitHub', href: contact.github },
     { id: 'linkedin', label: 'LinkedIn', href: contact.linkedin },
+    { id: 'leetcode', label: 'LeetCode', href: contact.leetcode },
     { id: 'resume', label: 'Resume', href: asset('/resume.pdf') },
     { id: 'email', label: 'Email', href: `mailto:${contact.email}`, sameTab: true },
 ]

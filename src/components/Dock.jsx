@@ -27,6 +27,10 @@ const LAYOUT = [
     kind: 'link', id: 'linkedin', className: 'link', label: 'LinkedIn',
     icon: asset('/doc-icons/link.svg'), href: contact.linkedin,
   },
+  {
+    kind: 'link', id: 'leetcode', className: 'leetcode', label: 'LeetCode',
+    icon: asset('/doc-icons/leetcode.svg'), href: contact.leetcode,
+  },
   { kind: 'window', id: 'cli' },
 ]
 
