@@ -1,5 +1,6 @@
 import React from 'react'
 import { projects } from '../../data/projects'
+import asset from '../../utils/asset'
 import './github.scss'
 
 /** "RAG Codebase Chatbot" -> "RC". Used by the placeholder tile. */
@@ -17,7 +18,7 @@ const monogram = (title) =>
 const GitCard = ({ data }) => (
     <div className='card'>
         {data.image
-            ? <img className='thumb' src={data.image} alt={`${data.title} screenshot`} loading='lazy' />
+            ? <img className='thumb' src={asset(data.image)} alt={`${data.title} screenshot`} loading='lazy' />
             : <div className='thumb placeholder' data-variant={data.id % 4} aria-hidden='true'>
                 <span>{monogram(data.title)}</span>
             </div>
