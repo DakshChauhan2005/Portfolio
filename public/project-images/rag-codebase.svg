@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Repository files retrieved through a vector index into a cited answer">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#03130f"/><stop offset=".5" stop-color="#0a2b26"/><stop offset="1" stop-color="#13544a"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx=".62" cy=".48" r=".45">
+      <stop offset="0" stop-color="#5eead4" stop-opacity=".32"/><stop offset="1" stop-color="#5eead4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx=".1" cy=".9" r=".5">
+      <stop offset="0" stop-color="#facc15" stop-opacity=".18"/><stop offset="1" stop-color="#facc15" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".78">
+      <stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b2822" stop-opacity=".97"/><stop offset="1" stop-color="#061a16" stop-opacity=".97"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8ff0da" stop-opacity=".65"/><stop offset="1" stop-color="#5eead4" stop-opacity=".16"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5eead4" stop-opacity=".1"/><stop offset="1" stop-color="#5eead4" stop-opacity=".95"/>
+    </linearGradient>
+    <radialGradient id="orb" cx=".35" cy=".3" r=".8">
+      <stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#facc15"/><stop offset="1" stop-color="#b7791f"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 H0 V40" fill="none" stroke="#7ff0d8" stroke-width="1" opacity=".07"/>
+    </pattern>
+    <filter id="drop" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#00120e" flood-opacity=".65"/>
+    </filter>
+    <filter id="bloom" x="-90%" y="-90%" width="280%" height="280%">
+      <feGaussianBlur stdDeviation="20" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#base)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <rect width="1600" height="900" fill="url(#glowA)"/>
+  <rect width="1600" height="900" fill="url(#glowB)"/>
+
+  <!-- source files -->
+  <g filter="url(#drop)">
+    <g>
+      <rect x="110" y="140" rx="18" width="310" height="176" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+      <rect x="110" y="140" rx="18" width="310" height="44" fill="#5eead4" opacity=".1"/>
+      <circle cx="140" cy="162" r="6" fill="#5eead4" opacity=".8"/>
+      <rect x="158" y="155" rx="6" width="120" height="13" fill="#bff6e8" opacity=".55"/>
+      <rect x="140" y="212" rx="7" width="70" height="14" fill="#c792ea" opacity=".9"/>
+      <rect x="220" y="212" rx="7" width="130" height="14" fill="#8ff0da" opacity=".8"/>
+      <rect x="140" y="244" rx="7" width="180" height="14" fill="#e6f5ee" opacity=".38"/>
+      <rect x="140" y="276" rx="7" width="110" height="14" fill="#facc15" opacity=".55"/>
+    </g>
+    <g>
+      <rect x="110" y="362" rx="18" width="310" height="176" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+      <rect x="110" y="362" rx="18" width="310" height="44" fill="#5eead4" opacity=".1"/>
+      <circle cx="140" cy="384" r="6" fill="#5eead4" opacity=".8"/>
+      <rect x="158" y="377" rx="6" width="150" height="13" fill="#bff6e8" opacity=".55"/>
+      <rect x="140" y="434" rx="7" width="110" height="14" fill="#c792ea" opacity=".9"/>
+      <rect x="260" y="434" rx="7" width="90" height="14" fill="#8ff0da" opacity=".8"/>
+      <rect x="140" y="466" rx="7" width="210" height="14" fill="#e6f5ee" opacity=".38"/>
+      <rect x="140" y="498" rx="7" width="150" height="14" fill="#e6f5ee" opacity=".24"/>
+    </g>
+    <g>
+      <rect x="110" y="584" rx="18" width="310" height="176" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+      <rect x="110" y="584" rx="18" width="310" height="44" fill="#5eead4" opacity=".1"/>
+      <circle cx="140" cy="606" r="6" fill="#5eead4" opacity=".8"/>
+      <rect x="158" y="599" rx="6" width="104" height="13" fill="#bff6e8" opacity=".55"/>
+      <rect x="140" y="656" rx="7" width="90" height="14" fill="#c792ea" opacity=".9"/>
+      <rect x="240" y="656" rx="7" width="110" height="14" fill="#8ff0da" opacity=".8"/>
+      <rect x="140" y="688" rx="7" width="170" height="14" fill="#e6f5ee" opacity=".38"/>
+      <rect x="140" y="720" rx="7" width="120" height="14" fill="#facc15" opacity=".45"/>
+    </g>
+  </g>
+
+  <!-- retrieval beams -->
+  <g fill="none" stroke="url(#beam)" stroke-width="4" stroke-linecap="round">
+    <path d="M430 228 C 560 228, 600 380, 706 442"/>
+    <path d="M430 450 C 560 450, 620 450, 706 450"/>
+    <path d="M430 672 C 560 672, 600 520, 706 458"/>
+  </g>
+  <g fill="#a7ffe8">
+    <circle cx="576" cy="268" r="5" opacity=".9"/><circle cx="640" cy="352" r="4" opacity=".65"/>
+    <circle cx="560" cy="450" r="5" opacity=".9"/><circle cx="648" cy="450" r="4" opacity=".65"/>
+    <circle cx="576" cy="632" r="5" opacity=".9"/><circle cx="640" cy="548" r="4" opacity=".65"/>
+  </g>
+
+  <!-- vector index orb -->
+  <g>
+    <circle cx="782" cy="450" r="104" fill="none" stroke="#facc15" stroke-width="1.5" opacity=".28"/>
+    <circle cx="782" cy="450" r="132" fill="none" stroke="#facc15" stroke-width="1.5" opacity=".14" stroke-dasharray="6 14"/>
+    <circle cx="782" cy="450" r="76" fill="#06201b" stroke="#facc15" stroke-width="3" filter="url(#bloom)" opacity=".95"/>
+    <g stroke="#facc15" stroke-width="1.6" opacity=".5" fill="none">
+      <path d="M752 422 L782 450 L812 422 M752 478 L782 450 L812 478 M752 422 L752 478 M812 422 L812 478"/>
+    </g>
+    <g fill="url(#orb)">
+      <circle cx="752" cy="422" r="10"/><circle cx="812" cy="422" r="10"/><circle cx="752" cy="478" r="10"/>
+      <circle cx="812" cy="478" r="10"/><circle cx="782" cy="450" r="12"/>
+    </g>
+  </g>
+  <path d="M862 450 L946 450" stroke="url(#beam)" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- answer panel -->
+  <g filter="url(#drop)">
+    <rect x="952" y="212" rx="26" width="540" height="476" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="952" y="212" rx="26" width="540" height="60" fill="#5eead4" opacity=".1"/>
+    <circle cx="990" cy="242" r="8" fill="#5eead4"/>
+    <rect x="1012" y="234" rx="7" width="150" height="16" fill="#bff6e8" opacity=".55"/>
+    <g fill="#e6f5ee">
+      <rect x="996" y="312" rx="9" width="400" height="18" opacity=".92"/>
+      <rect x="996" y="350" rx="9" width="452" height="18" opacity=".6"/>
+      <rect x="996" y="388" rx="9" width="360" height="18" opacity=".6"/>
+      <rect x="996" y="426" rx="9" width="418" height="18" opacity=".38"/>
+    </g>
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24">
+      <rect x="996" y="486" rx="14" width="290" height="48" fill="#facc15" opacity=".14" stroke="#facc15" stroke-width="1.5"/>
+      <text x="1020" y="517" fill="#ffe082">src/index.js:42</text>
+      <rect x="996" y="550" rx="14" width="320" height="48" fill="#facc15" opacity=".14" stroke="#facc15" stroke-width="1.5"/>
+      <text x="1020" y="581" fill="#ffe082">lib/parser.js:118</text>
+    </g>
+    <rect x="996" y="622" rx="9" width="210" height="18" fill="#5eead4" opacity=".4"/>
+  </g>
+
+  <!-- query magnifier -->
+  <g stroke="#e6f5ee" stroke-width="9" fill="none" opacity=".75">
+    <circle cx="1360" cy="740" r="50"/><path d="M1396 776 L1444 824" stroke-linecap="round"/>
+  </g>
+
+  <rect width="1600" height="900" fill="url(#vig)"/>
+</svg>

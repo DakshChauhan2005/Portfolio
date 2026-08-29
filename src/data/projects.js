@@ -9,12 +9,12 @@
  *   tags        string[] real stack only
  *   repoLink    string   public repo URL
  *   demoLink    string?  live deployment, or null
- *   image       string?  local screenshot under src/assets/, or null for a
- *                        generated placeholder tile. See TODO below.
+ *   image       string?  cover art served from public/project-images/, or null
+ *                        for a generated placeholder tile.
  *
- * TODO(screenshots): every card currently falls back to a generated tile.
- * Drop real screenshots into src/assets/projects/ and set `image` to the
- * imported asset — stock photos are worse than no photo.
+ * Covers are hand-drawn SVGs illustrating what each project does — self-hosted
+ * so nothing can rot or hotlink off someone else's CDN. Swap any of them for a
+ * real screenshot once there is one to show; a screenshot always wins.
  */
 
 export const projects = [
@@ -37,7 +37,7 @@ export const projects = [
     ],
     repoLink: "https://github.com/DakshChauhan2005/SnapSeek",
     demoLink: null,
-    image: null,
+    image: "/project-images/snapseek-chat.svg",
   },
   {
     id: 2,
@@ -54,7 +54,7 @@ export const projects = [
     ],
     repoLink: "https://github.com/DakshChauhan2005/RAG-Based-Chatbot",
     demoLink: null,
-    image: null,
+    image: "/project-images/rag-codebase.svg",
   },
   {
     id: 3,
@@ -72,7 +72,7 @@ export const projects = [
     ],
     repoLink: "https://github.com/DakshChauhan2005/Vibex_ayushsingh",
     demoLink: "https://vibex-ayushsingh.vercel.app",
-    image: null,
+    image: "/project-images/neighbourhood-marketplace.svg",
   },
   {
     id: 4,
@@ -91,7 +91,7 @@ export const projects = [
     ],
     repoLink: "https://github.com/DakshChauhan2005/dropout-cafe",
     demoLink: "https://dropout-cafe.vercel.app",
-    image: null,
+    image: "/project-images/dropout-cafe.svg",
   },
   {
     id: 5,
@@ -110,7 +110,7 @@ export const projects = [
     ],
     repoLink: "https://github.com/DakshChauhan2005/Auth-server",
     demoLink: null,
-    image: null,
+    image: "/project-images/auth-system.svg",
   },
   {
     id: 6,
@@ -128,7 +128,7 @@ export const projects = [
     ],
     repoLink: "https://github.com/DakshChauhan2005/Fetch-n-Send--Agentic-Workflow",
     demoLink: null,
-    image: null,
+    image: "/project-images/fetch-n-send-cli.svg",
   },
 ];
 

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Live chat bubbles with an AI reply being generated">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080d24"/><stop offset=".55" stop-color="#111c47"/><stop offset="1" stop-color="#1b2a63"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx=".22" cy=".18" r=".55">
+      <stop offset="0" stop-color="#5b8cff" stop-opacity=".38"/><stop offset="1" stop-color="#5b8cff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx=".82" cy=".85" r=".5">
+      <stop offset="0" stop-color="#a855f7" stop-opacity=".32"/><stop offset="1" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".78">
+      <stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+    </radialGradient>
+    <linearGradient id="sent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6f9bff"/><stop offset="1" stop-color="#3450d8"/>
+    </linearGradient>
+    <linearGradient id="recv" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dfe6f7"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".55"/><stop offset="1" stop-color="#7aa2ff" stop-opacity=".18"/>
+    </linearGradient>
+    <linearGradient id="wire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7aa2ff" stop-opacity="0"/><stop offset=".5" stop-color="#9fc0ff" stop-opacity=".95"/><stop offset="1" stop-color="#7aa2ff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#9fc0ff" opacity=".16"/>
+    </pattern>
+    <filter id="drop" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="20" stdDeviation="26" flood-color="#03050f" flood-opacity=".6"/>
+    </filter>
+    <filter id="bloom" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="22" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#base)"/>
+  <rect width="1600" height="900" fill="url(#dots)"/>
+  <rect width="1600" height="900" fill="url(#glowA)"/>
+  <rect width="1600" height="900" fill="url(#glowB)"/>
+  <g opacity=".1" fill="none" stroke="#cfe0ff" stroke-width="1.5">
+    <circle cx="1300" cy="180" r="190"/><circle cx="1300" cy="180" r="300"/><circle cx="1300" cy="180" r="410"/>
+  </g>
+
+  <!-- live status pill -->
+  <g filter="url(#drop)">
+    <rect x="1140" y="86" rx="30" width="330" height="60" fill="#0c1436" opacity=".85" stroke="url(#edge)" stroke-width="1.5"/>
+    <circle cx="1180" cy="116" r="9" fill="#4ade80" filter="url(#bloom)"/>
+    <rect x="1206" y="106" rx="8" width="150" height="16" fill="#cfe0ff" opacity=".5"/>
+    <rect x="1372" y="106" rx="8" width="66" height="16" fill="#cfe0ff" opacity=".25"/>
+  </g>
+
+  <!-- incoming message -->
+  <g filter="url(#drop)">
+    <circle cx="176" cy="292" r="46" fill="#26356e" stroke="url(#edge)" stroke-width="1.5"/>
+    <path d="M176 278 a20 20 0 1 1 .1 0 M144 330 a34 26 0 0 1 64 0" fill="#9fc0ff" opacity=".85"/>
+    <g>
+      <path d="M256 186 h560 a34 34 0 0 1 34 34 v112 a34 34 0 0 1 -34 34 h-500 l-60 46 v-46 h0 a34 34 0 0 1 -34 -34 v-112 a34 34 0 0 1 34 -34 Z" fill="url(#recv)"/>
+      <rect x="298" y="228" rx="10" width="430" height="20" fill="#16204a" opacity=".8"/>
+      <rect x="298" y="268" rx="10" width="330" height="20" fill="#16204a" opacity=".45"/>
+      <rect x="298" y="308" rx="10" width="180" height="20" fill="#16204a" opacity=".28"/>
+    </g>
+  </g>
+
+  <!-- socket wire -->
+  <path d="M870 300 C 1010 300, 980 372, 1120 372" fill="none" stroke="url(#wire)" stroke-width="3.5" stroke-dasharray="10 16" stroke-linecap="round"/>
+
+  <!-- outgoing message -->
+  <g filter="url(#drop)">
+    <path d="M770 400 h560 a34 34 0 0 1 34 34 v112 a34 34 0 0 1 -34 34 h0 v46 l-60 -46 h-500 a34 34 0 0 1 -34 -34 v-112 a34 34 0 0 1 34 -34 Z" fill="url(#sent)"/>
+    <path d="M770 400 h560 a34 34 0 0 1 34 34 v26 h-628 v-26 a34 34 0 0 1 34 -34 Z" fill="#ffffff" opacity=".14"/>
+    <rect x="812" y="442" rx="10" width="450" height="20" fill="#ffffff" opacity=".95"/>
+    <rect x="812" y="482" rx="10" width="360" height="20" fill="#ffffff" opacity=".62"/>
+    <rect x="812" y="522" rx="10" width="220" height="20" fill="#ffffff" opacity=".38"/>
+    <!-- read receipt -->
+    <path d="M1262 546 l12 13 26 -30 M1290 546 l12 13 26 -30" fill="none" stroke="#bfe8ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+  </g>
+
+  <!-- AI generating bubble -->
+  <g filter="url(#drop)">
+    <rect x="176" y="618" rx="38" width="520" height="152" fill="#0c1436" opacity=".92" stroke="url(#edge)" stroke-width="2"/>
+    <path d="M208 770 v58 l54 -58 Z" fill="#0c1436" opacity=".92"/>
+    <g fill="#7aa2ff">
+      <circle cx="286" cy="694" r="15"/>
+      <circle cx="344" cy="694" r="15" opacity=".62"/>
+      <circle cx="402" cy="694" r="15" opacity=".34"/>
+    </g>
+    <path d="M566 630 l17 47 47 17 -47 17 -17 47 -17 -47 -47 -17 47 -17 Z" fill="#ffd76a" filter="url(#bloom)"/>
+    <path d="M636 682 l8 22 22 8 -22 8 -8 22 -8 -22 -22 -8 22 -8 Z" fill="#ffd76a" opacity=".8"/>
+  </g>
+
+  <rect width="1600" height="900" fill="url(#vig)"/>
+</svg>

@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Login form protected by a shield, issuing a JWT and a verification email">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#040d16"/><stop offset=".5" stop-color="#0a2233"/><stop offset="1" stop-color="#14536b"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx=".55" cy=".42" r=".45">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity=".28"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx=".15" cy=".85" r=".5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity=".2"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx=".5" cy=".5" r=".78">
+      <stop offset=".52" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".58"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b2130" stop-opacity=".98"/><stop offset="1" stop-color="#05131d" stop-opacity=".98"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#93e6ff" stop-opacity=".6"/><stop offset="1" stop-color="#38bdf8" stop-opacity=".14"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e2c3d"/><stop offset="1" stop-color="#061722"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9a8"/><stop offset="1" stop-color="#e0a92f"/>
+    </linearGradient>
+    <linearGradient id="cta" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#2c9fd4"/>
+    </linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0 H0 V44" fill="none" stroke="#7dd3fc" stroke-width="1" opacity=".06"/>
+    </pattern>
+    <filter id="drop" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="20" stdDeviation="26" flood-color="#020a12" flood-opacity=".7"/>
+    </filter>
+    <filter id="bloom" x="-90%" y="-90%" width="280%" height="280%">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 L11 6 L1 11 Z" fill="#bde8ff" opacity=".8"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#base)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <rect width="1600" height="900" fill="url(#glowA)"/>
+  <rect width="1600" height="900" fill="url(#glowB)"/>
+
+  <!-- login card -->
+  <g filter="url(#drop)">
+    <rect x="120" y="186" rx="28" width="480" height="528" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="120" y="186" rx="28" width="480" height="76" fill="#38bdf8" opacity=".1"/>
+    <circle cx="164" cy="224" r="9" fill="#7dd3fc"/>
+    <rect x="188" y="216" rx="7" width="130" height="16" fill="#bde8ff" opacity=".5"/>
+    <rect x="176" y="304" rx="9" width="168" height="20" fill="#ffffff" opacity=".88"/>
+    <g>
+      <rect x="176" y="352" rx="14" width="368" height="64" fill="#ffffff" opacity=".07"/>
+      <rect x="204" y="374" rx="8" width="188" height="18" fill="#bde8ff" opacity=".45"/>
+    </g>
+    <g>
+      <rect x="176" y="440" rx="14" width="368" height="64" fill="#7dd3fc" opacity=".1"/>
+      <rect x="176" y="440" rx="14" width="368" height="64" fill="none" stroke="#7dd3fc" stroke-width="2.5" filter="url(#bloom)"/>
+      <g fill="#bde8ff" opacity=".75">
+        <circle cx="212" cy="472" r="9"/><circle cx="244" cy="472" r="9"/><circle cx="276" cy="472" r="9"/>
+        <circle cx="308" cy="472" r="9"/><circle cx="340" cy="472" r="9"/><circle cx="372" cy="472" r="9"/>
+      </g>
+      <rect x="502" y="464" width="4" height="18" fill="#7dd3fc"/>
+    </g>
+    <rect x="176" y="540" rx="16" width="368" height="62" fill="url(#cta)"/>
+    <rect x="176" y="636" rx="8" width="212" height="16" fill="#bde8ff" opacity=".3"/>
+    <rect x="176" y="668" rx="8" width="150" height="16" fill="#bde8ff" opacity=".18"/>
+  </g>
+
+  <!-- shield -->
+  <g filter="url(#drop)">
+    <g transform="translate(760 232)">
+      <path d="M190 0 L376 76 v176 c0 158 -116 264 -186 302 c-70 -38 -186 -144 -186 -302 V76 Z" fill="url(#shield)" stroke="url(#gold)" stroke-width="7"/>
+      <path d="M190 22 L356 90 v162 c0 140 -100 238 -166 274 Z" fill="#ffffff" opacity=".04"/>
+      <path d="M190 22 L24 90 v162 c0 140 100 238 166 274 Z" fill="#7dd3fc" opacity=".06"/>
+      <g transform="translate(190 262)" filter="url(#bloom)">
+        <rect x="-64" y="-22" width="128" height="106" rx="22" fill="url(#gold)"/>
+        <path d="M-38 -22 v-40 a38 38 0 0 1 76 0 v40" fill="none" stroke="url(#gold)" stroke-width="18" stroke-linecap="round"/>
+        <circle cx="0" cy="22" r="14" fill="#1a1204"/><rect x="-6" y="22" width="12" height="34" rx="6" fill="#1a1204"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- flow lines -->
+  <g stroke="#bde8ff" stroke-width="3" opacity=".45" fill="none" stroke-dasharray="10 14" stroke-linecap="round" marker-end="url(#arrow)">
+    <path d="M604 470 L748 470"/>
+    <path d="M1146 400 C 1200 400, 1180 292, 1224 268"/>
+    <path d="M1146 552 C 1200 552, 1180 660, 1224 686"/>
+  </g>
+
+  <!-- JWT token -->
+  <g filter="url(#drop)">
+    <rect x="1226" y="178" rx="20" width="286" height="176" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1226" y="178" rx="20" width="286" height="48" fill="#38bdf8" opacity=".1"/>
+    <rect x="1252" y="194" rx="6" width="86" height="14" fill="#bde8ff" opacity=".5"/>
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="26">
+      <text x="1252" y="272" fill="#f472b6">eyJhbGci</text>
+      <text x="1252" y="310" fill="#7dd3fc">.eyJzdWIi</text>
+      <text x="1390" y="310" fill="#ffd76a">.sig</text>
+    </g>
+    <g>
+      <rect x="1252" y="326" width="80" height="4" rx="2" fill="#f472b6" opacity=".7"/>
+      <rect x="1340" y="326" width="80" height="4" rx="2" fill="#7dd3fc" opacity=".7"/>
+      <rect x="1428" y="326" width="58" height="4" rx="2" fill="#ffd76a" opacity=".7"/>
+    </g>
+  </g>
+
+  <!-- verification email -->
+  <g filter="url(#drop)">
+    <rect x="1226" y="596" rx="20" width="286" height="188" fill="url(#panel)" stroke="url(#edge)" stroke-width="2"/>
+    <path d="M1226 620 L1369 716 L1512 620" fill="none" stroke="#bde8ff" stroke-width="5" opacity=".55"/>
+    <rect x="1260" y="736" rx="7" width="150" height="14" fill="#bde8ff" opacity=".35"/>
+    <g filter="url(#bloom)">
+      <circle cx="1502" cy="602" r="34" fill="#4ade80"/>
+      <path d="M1486 602 l11 13 22 -26" fill="none" stroke="#06210f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <rect width="1600" height="900" fill="url(#vig)"/>
+</svg>
